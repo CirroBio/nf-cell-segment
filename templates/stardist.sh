@@ -30,4 +30,9 @@ QuPath script \
     --args \$PWD/qupath_project \
     --args "${input_tiff}" \
     --args \$PWD/cells.geo.json \
+    --args ${params.threshold} \
+    --args ${params.pixelSize} \
+    --args ${params.channels} \
+    --args ${params.cellExpansion} \
+    --args ${params.cellConstrainScale} \
     | tee -a qupath.log.txt

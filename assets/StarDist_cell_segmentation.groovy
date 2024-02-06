@@ -5,17 +5,23 @@ import java.awt.image.BufferedImage
 import qupath.lib.images.servers.ImageServerProvider
 import qupath.opencv.ops.ImageOps
 
+def threshold = Float args[5]
+def pixelSize = Float args[6]
+def channels = Integer args[7]
+def cellExpansion = Integer args[8]
+def cellConstrainScale = Float args[9]
+
 def stardist = StarDist2D
         .builder(args[0])
-        .threshold(0.5)              // Probability (detection) threshold
+        .threshold(threshold)        // Probability (detection) threshold
         .preprocess(
                 ImageOps.Core.subtract(100),
                 ImageOps.Core.divide(100)
         )
-        .pixelSize(0.50)             // Resolution for detection
-        .channels(0)                 // Select detection channel
-        .cellExpansion(5.0)          // Approximate cells based upon nucleus expansion
-        .cellConstrainScale(1.5)     // Constrain cell expansion using nucleus size
+        .pixelSize(pixelSize)        // Resolution for detection
+        .channels(channels)                 // Select detection channel
+        .cellExpansion(cellExpansion)          // Approximate cells based upon nucleus expansion
+        .cellConstrainScale(cellConstrainScale)     // Constrain cell expansion using nucleus size
         .measureShape()              // Add shape measurements
         .measureIntensity()          // Add cell measurements (in all compartments)
         .includeProbability(true)    // Add probability as a measurement (enables later filtering)
