@@ -13,6 +13,8 @@ process stardist {
         path stardist_jar
 
     output:
+        path "measurements.csv"
+        path "cells.geo.json"
         path "*"
 
     script:

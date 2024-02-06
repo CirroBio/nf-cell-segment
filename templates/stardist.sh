@@ -7,6 +7,10 @@ sed -i \
     's/\\[Application\\]/\\[Application\\]\\napp.classpath=\$APPDIR\\/${stardist_jar}/' \
     /usr/local/QuPath/lib/app/QuPath.cfg
 
+sed -i \
+    's/MaxRAMPercentage=50/MaxRAMPercentage=99/' \
+    /usr/local/QuPath/lib/app/QuPath.cfg
+
 cat /usr/local/QuPath/lib/app/QuPath.cfg
 
 echo Working Directory: | tee qupath.log.txt
@@ -25,4 +29,5 @@ QuPath script \
     --args \$PWD/measurements.csv \
     --args \$PWD/qupath_project \
     --args "${input_tiff}" \
+    --args \$PWD/cells.geo.json \
     | tee -a qupath.log.txt
