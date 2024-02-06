@@ -5,11 +5,11 @@ import java.awt.image.BufferedImage
 import qupath.lib.images.servers.ImageServerProvider
 import qupath.opencv.ops.ImageOps
 
-def threshold = Float args[5]
-def pixelSize = Float args[6]
-def channels = Integer args[7]
-def cellExpansion = Integer args[8]
-def cellConstrainScale = Float args[9]
+def threshold = args[5] as float
+def pixelSize = args[6] as float
+def channels = args[7] as int
+def cellExpansion = args[8] as int
+def cellConstrainScale = args[9] as float
 
 def stardist = StarDist2D
         .builder(args[0])
