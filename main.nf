@@ -15,6 +15,7 @@ process stardist {
     output:
         path "measurements.csv"
         path "cells.geo.json"
+        path "${input_tiff}"
         path "*"
 
     script:
