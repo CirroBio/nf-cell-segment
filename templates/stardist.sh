@@ -36,3 +36,6 @@ QuPath script \
     --args ${params.cellExpansion} \
     --args ${params.cellConstrainScale} \
     | tee -a qupath.log.txt
+
+gzip measurements.csv
+gzip cells.geo.json
