@@ -75,7 +75,7 @@ def exporter  = new MeasurementExporter()
 // Export the cell shapes as GeoJSON
 println 'Exporting cell shapes'
 
-def annotations = imageData.getHierarchy().getAllObjects()
+def annotations = imageData.getHierarchy().getCellObjects()
 def geoJsonPath = args[4]
 exportObjectsToGeoJson(annotations, geoJsonPath)
 
