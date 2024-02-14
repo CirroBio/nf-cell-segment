@@ -28,7 +28,7 @@ QuPath script \
     --args \$PWD/$seg_model \
     --args \$PWD/measurements.csv \
     --args \$PWD/qupath_project \
-    --args "${input_tiff}" \
+    --args \$PWD/input.tiff \
     --args \$PWD/cells.geo.json \
     --args ${params.threshold} \
     --args ${params.pixelSize} \

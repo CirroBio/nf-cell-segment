@@ -9,13 +9,13 @@ process stardist {
     input:
         path script
         path seg_model
-        path input_tiff
+        path "input.tiff"
         path stardist_jar
 
     output:
         path "measurements.csv.gz"
         path "cells.geo.json.gz"
-        path "${input_tiff}"
+        path "input.tiff"
         path "*"
 
     script:
