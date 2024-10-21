@@ -17,6 +17,20 @@ process qupath_stardist {
     template "stardist.sh"
 }
 
+process split_measurements {
+    container "${params.container_python}"
+    publishDir "${params.output_folder}", mode: 'copy', overwrite: true
+
+    input:
+        path measurements_csv
+
+    output:
+        path "*.csv"
+
+    script:
+    template "split_measurements.py"
+}
+
 workflow stardist {
     take:
     script
@@ -27,6 +41,8 @@ workflow stardist {
     main:
 
     qupath_stardist(script, seg_model, input_tiff, stardist_jar)
+
+    split_measurements(qupath_stardist.out.measurements_csv)
 
 
 }
