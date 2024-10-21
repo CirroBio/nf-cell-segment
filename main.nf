@@ -2,25 +2,7 @@
 
 nextflow.enable.dsl = 2
 
-process stardist {
-    container "${params.container}"
-    publishDir "${params.output_folder}", mode: 'copy', overwrite: true
-
-    input:
-        path script
-        path seg_model
-        path "input.tiff"
-        path stardist_jar
-
-    output:
-        path "measurements.csv.gz"
-        path "cells.geo.json.gz"
-        path "input.tiff"
-        path "*"
-
-    script:
-    template "stardist.sh"
-}
+include { stardist } from './modules/stardist.nf'
 
 workflow {
 
