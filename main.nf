@@ -27,7 +27,18 @@ Parameters:
     model:          ${params.model}
     output_folder:  ${params.output_folder}
     container:      ${params.container}
-    args:           ${params.args}
+    pixelSize:      ${params.pixelSize}
+    channels:       ${params.channels}
+    cellExpansion:  ${params.cellExpansion}
+    cellConstrainScale: ${params.cellConstrainScale}
+    build_dashboard:${params.build_dashboard}
+    cluster_by:     ${params.cluster_by}
+    cluster_method: ${params.cluster_method}
+    cluster_resolution: ${params.cluster_resolution}
+    cluster_n_neighbors: ${params.cluster_n_neighbors}
+    scaling:        ${params.scaling}
+    clip_lower:     ${params.clip_lower}
+    clip_upper:     ${params.clip_upper}
     """
 
     input_tiff = file(
