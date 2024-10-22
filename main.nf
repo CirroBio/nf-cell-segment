@@ -69,15 +69,6 @@ Parameters:
 
         cluster(stardist.out.measurements)
 
-        // Get the pixel size by parsing the qupath metadata
-        parse_qupath_project(stardist.out.project)
-        parse_qupath_project
-            .out
-            .apply {
-                def jsonSlurper = new JsonSlurper()
-
-            }
-
         dashboard(
             stardist.out.spatial,
             stardist.out.attributes,
