@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import pandas as pd
 import logging
 from collections import defaultdict
@@ -35,16 +37,19 @@ def parse_stardist(fp: str) -> Tuple[Dict[str, pd.DataFrame], pd.DataFrame, pd.D
         spatial=["Centroid X µm", "Centroid Y µm"],
         attributes=["Object ID", "Detection probability", "Nucleus/Cell area ratio"]
     )
+    expected_cnames = [cname in cname_list for cname_list in struct.values()]
+
+    # Make sure that all of the expected columns are present
+    for cname in expected_cnames:
+        if not cname in df.columns.values:
+            raise ValueError(f"Missing column: {cname}")
 
     # Use some flexible logic to assign data to categories, taking advantage of the
     # fact that the data is structured as "Partition: Measurement"
     for cname in df.columns.values:
 
-        # Skip anything defined above
-        if any([
-            cname in cname_list
-            for cname_list in struct.values()
-        ]):
+        # Skip columns which have already been set up
+        if expected_cnames:
             continue
 
         # Parse the column names into fields
@@ -63,6 +68,7 @@ def parse_stardist(fp: str) -> Tuple[Dict[str, pd.DataFrame], pd.DataFrame, pd.D
             label = f"{partition}.{measurement}"
             # Pass through the name of the partition
             struct["partition"][label].append(cname)
+            logger.info(f"Assigned {cname} to {label}")
 
     # Make the component tables
     partition = {
@@ -82,11 +88,15 @@ def parse_stardist(fp: str) -> Tuple[Dict[str, pd.DataFrame], pd.DataFrame, pd.D
 if __name__ == "__main__":
 
     fp = "${measurements_csv}"
+    logger.info(f"Reading data from: {fp}")    
     partition, spatial, attributes = parse_stardist(fp)
 
     # Save to files
     for label, table in partition.items():
+        logger.info(f"Saving {label} data")
         table.to_csv(f"{label}.csv")
 
+    logger.info("Saving spatial data")
     spatial.to_csv("spatial.csv")
+    logger.info("Saving attributes data")
     attributes.to_csv("attributes.csv")

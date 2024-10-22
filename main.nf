@@ -3,6 +3,9 @@
 nextflow.enable.dsl = 2
 
 include { stardist } from './modules/stardist.nf'
+include { cluster } from './modules/cluster.nf'
+include { dashboard } from './modules/dashboard.nf'
+import groovy.json.JsonSlurper
 
 workflow {
 
@@ -50,5 +53,30 @@ Parameters:
         input_tiff,
         stardist_jar
     )
+
+    if(params.build_dashboard){
+
+        cluster(stardist.out.measurements)
+
+        // Get the pixel size by parsing the qupath metadata
+        parse_qupath_project(stardist.out.project)
+        parse_qupath_project
+            .out
+            .apply {
+                def jsonSlurper = new JsonSlurper()
+
+            }
+
+        dashboard(
+            stardist.out.spatial,
+            stardist.out.attributes,
+            cluster.out.clusters,
+            cluster.out.scaled_data,
+            stardist.out.cells_geo_json,
+            input_tiff,
+            stardist.out.pixel_size
+        )
+
+    }
 
 }
