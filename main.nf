@@ -67,7 +67,7 @@ Parameters:
 
     if(params.build_dashboard){
 
-        cluster(stardist.out.measurements)
+        cluster(stardist.out.intensities)
 
         dashboard(
             stardist.out.spatial,
