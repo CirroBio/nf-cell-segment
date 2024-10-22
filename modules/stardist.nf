@@ -62,6 +62,8 @@ workflow stardist {
 
     split_measurements(qupath_stardist.out.measurements_csv)
 
+    get_pixel_size(qupath_stardist.out.project)
+
     emit:
     project = qupath_stardist.out.project
     cells_geo_json = qupath_stardist.out.cells_geo_json
