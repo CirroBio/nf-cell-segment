@@ -51,7 +51,7 @@ def parse_stardist(fp: str) -> Tuple[Dict[str, pd.DataFrame], pd.DataFrame, pd.D
     for cname in df.columns.values:
 
         # Skip columns which have already been set up
-        if expected_cnames:
+        if cname in expected_cnames:
             continue
 
         # Parse the column names into fields
