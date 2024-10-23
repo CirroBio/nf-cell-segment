@@ -37,7 +37,7 @@ def parse_stardist(fp: str) -> Tuple[Dict[str, pd.DataFrame], pd.DataFrame, pd.D
         spatial=["Centroid X µm", "Centroid Y µm"],
         attributes=["Object ID", "Detection probability", "Nucleus/Cell area ratio"]
     )
-    expected_cnames = [cname in cname_list for cname_list in struct.values()]
+    expected_cnames = [cname for cname_list in struct.values() for cname in cname_list ]
 
     # Make sure that all of the expected columns are present
     for cname in expected_cnames:
