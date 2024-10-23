@@ -85,7 +85,7 @@ def parse_stardist(fp: str) -> Tuple[Dict[str, pd.DataFrame], pd.DataFrame, pd.D
     return partition, spatial, attributes
 
 
-if __name__ == "__main__":
+def main():
 
     fp = "${measurements_csv}"
     logger.info(f"Reading data from: {fp}")    
@@ -100,3 +100,6 @@ if __name__ == "__main__":
     spatial.to_csv("spatial.csv")
     logger.info("Saving attributes data")
     attributes.to_csv("attributes.csv")
+
+
+main()

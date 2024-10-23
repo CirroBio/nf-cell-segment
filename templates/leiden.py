@@ -140,5 +140,4 @@ def main():
     adata.obs.to_csv('leiden_clusters.csv')
 
 
-if __name__ == '__main__':
-    main()
+main()

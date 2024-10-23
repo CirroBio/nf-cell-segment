@@ -51,5 +51,4 @@ def main(
     adata.write("spatialdata.h5ad")
 
 
-if __name__ == "__main__":
-    main()
+main()
