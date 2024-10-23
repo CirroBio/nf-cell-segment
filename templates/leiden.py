@@ -73,8 +73,6 @@ def leiden(adata, resolution=1.0, n_neighbors=30):
         The resolution parameter for the Leiden algorithm.
     n_neighbors : int
         The number of neighbors to use for the KNN graph.
-    n_jobs : int
-        The number of parallel jobs to run.
     """
 
     # Run the neighbors algorithm
@@ -82,16 +80,14 @@ def leiden(adata, resolution=1.0, n_neighbors=30):
     sc.pp.neighbors(
         adata,
         n_neighbors=n_neighbors,
-        n_pcs=0,
-        n_jobs=${task.cpus}
+        n_pcs=0
     )
 
     # Run the Leiden algorithm
     logger.info(f"Running the Leiden algorithm with resolution {resolution}")
     sc.tl.leiden(
         adata,
-        resolution=resolution,
-        n_jobs=${task.cpus}
+        resolution=resolution
     )
 
     return adata
