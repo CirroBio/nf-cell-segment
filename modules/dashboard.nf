@@ -28,8 +28,18 @@ process spatialdata {
     output:
     path "spatialdata.zarr.zip"
 
-    script:
-    template "spatialdata.py"
+    """#!/bin/bash
+spatialdata.py \
+    --anndata "${anndata}" \
+    --cells_geo_json "${cells_geo_json}" \
+    --image "${image}" \
+    --pixel_size "${pixel_size}"
+
+# Zip up the output
+echo "Zipping up the output"
+zip -r spatialdata.zarr.zip spatialdata.zarr
+rm -rf spatialdata.zarr
+    """
 }
 
 
