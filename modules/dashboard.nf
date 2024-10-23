@@ -17,6 +17,7 @@ process anndata {
 
 process spatialdata {
     container "${params.container_spatialdata}"
+    publishDir "${params.output_folder}", mode: 'copy', overwrite: true
 
     input:
     path anndata

@@ -1,5 +1,6 @@
 process leiden {
     container "${params.container_python}"
+    publishDir "${params.output_folder}", mode: 'copy', overwrite: true
 
     input:
     path "*"
