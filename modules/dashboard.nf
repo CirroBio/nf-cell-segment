@@ -1,5 +1,5 @@
 process anndata {
-    container "${params.container_spatialdata}"
+    container "${params.container_python}"
 
     input:
     path spatial
@@ -16,7 +16,7 @@ process anndata {
 
 
 process spatialdata {
-    container "${params.container_spatialdata}"
+    container "${params.container_python}"
     publishDir "${params.output_folder}", mode: 'copy', overwrite: true
 
     input:
