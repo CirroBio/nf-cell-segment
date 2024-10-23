@@ -932,6 +932,11 @@ def main(anndata, cells_geo_json, image, pixel_size):
     logger.info("Saving to Zarr")
     sdata.to_zarr("spatialdata.zarr")
 
+    # Save the vitessce config to JSON
+    logger.info("Saving Vitessce config")
+    with open("spatialdata.vt.json", "w") as f:
+        json.dump(vt_config, f, indent=4)
+
 
 if __name__ == "__main__":
     main()

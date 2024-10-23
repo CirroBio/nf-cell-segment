@@ -27,6 +27,7 @@ process spatialdata {
 
     output:
     path "spatialdata.zarr.zip"
+    path "spatialdata.vt.json"
 
     """#!/bin/bash
 spatialdata.py \
