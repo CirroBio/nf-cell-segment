@@ -39,10 +39,10 @@ def read_table(fp: str) -> TableModel:
 def parse_geo_json(
     geo_json: List[dict],
     kw: str,
-    px_size=1.0
+    pixel_size=1.0
 ) -> GeoDataFrame:
 
-    logger.info(f"Parsing GeoJson - {kw} (px_size={px_size})")
+    logger.info(f"Parsing GeoJson - {kw} (pixel_size={pixel_size})")
 
     geo_df = (
         GeoDataFrame([
@@ -59,7 +59,7 @@ def parse_geo_json(
         .set_index("id")
     )
     scale = Scale(
-        [1.0 / px_size, 1.0 / px_size],
+        [1.0 / pixel_size, 1.0 / pixel_size],
         axes=("x", "y")
     )
 
@@ -73,7 +73,7 @@ def main(
     anndata = "${anndata}",
     cells_geo_json = "${cells_geo_json}",
     image = "${image}",
-    px_size = ${px_size}
+    pixel_size = ${pixel_size}
 ):
     # Read in the AnnData object
     logger.info(f"Reading in {anndata}")
@@ -88,12 +88,12 @@ def main(
         cell=parse_geo_json(
             geo_json,
             "geometry",
-            px_size=px_size
+            pixel_size=pixel_size
         ),
         nucleus=parse_geo_json(
             geo_json,
             "nucleusGeometry",
-            px_size=px_size
+            pixel_size=pixel_size
         )
     )
 
