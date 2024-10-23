@@ -35,7 +35,7 @@ process get_pixel_size {
 
 process split_measurements {
     container "${params.container_python}"
-    publishDir "${params.output_folder}", mode: 'copy', overwrite: true
+    publishDir "${params.output_folder}/measurements", mode: 'copy', overwrite: true
 
     input:
         path measurements_csv
