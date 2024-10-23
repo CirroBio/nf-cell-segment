@@ -4,7 +4,9 @@ import pandas as pd
 from anndata import AnnData
 import logging
 
-logger = logging.getLogger(str(__name__))
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger()
 
 
 def read_csv(fp: str, label: str) -> pd.DataFrame:

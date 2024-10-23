@@ -6,7 +6,9 @@ import os
 import pandas as pd
 import logging
 
-logger = logging.getLogger(str(__name__))
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger()
 
 
 def robust_scale(vals: pd.Series):

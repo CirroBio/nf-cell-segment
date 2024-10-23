@@ -5,7 +5,9 @@ import logging
 from collections import defaultdict
 from typing import Dict, Tuple
 
-logger = logging.getLogger(str(__name__))
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger()
 
 
 def parse_stardist(fp: str) -> Tuple[Dict[str, pd.DataFrame], pd.DataFrame, pd.DataFrame]:
