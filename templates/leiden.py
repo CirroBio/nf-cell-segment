@@ -90,7 +90,52 @@ def leiden(adata, resolution=1.0, n_neighbors=30):
         resolution=resolution
     )
 
+    # Run the UMAP algorithm
+    logger.info("Running the UMAP algorithm")
+    sc.tl.umap(adata)
+
     return adata
+
+
+def make_summary_plots(adata):
+    """
+    Make summary plots of the clustering results using the scanpy library.
+    These include:
+        - A UMAP plot of the clusters
+        - A violin plot of the cluster assignments
+        - A dot plot of the cluster assignments
+
+    Parameters
+    ----------
+    adata : AnnData
+        The annotated data object.
+
+    Output
+    ------
+    Files are written to *.pdf in the current working directory.
+    """
+
+    # Make a UMAP plot
+    logger.info("Making a UMAP plot")
+    sc.pl.umap(
+        adata,
+        color='leiden',
+        add_outline=True,
+        legend_loc="on data",
+        legend_fontsize=12,
+        legend_fontoutline=2,
+        frameon=False,
+        palette="Set1",
+        save='.pdf'
+    )
+
+    # Make a violin plot
+    logger.info("Making a violin plot")
+    sc.pl.violin(adata, adata.var_names, groupby='leiden', save='.pdf')
+
+    # Make a dot plot
+    logger.info("Making a dot plot")
+    sc.pl.dotplot(adata, adata.var_names, groupby='leiden', save='.pdf')
 
 
 def main():
@@ -136,6 +181,10 @@ def main():
     # Write out the cluster assignments
     logger.info("Saving the cluster assignments")
     adata.obs.to_csv('leiden_clusters.csv')
+
+    # Make summary plots
+    logger.info("Making summary plots")
+    make_summary_plots(adata)
 
 
 main()
