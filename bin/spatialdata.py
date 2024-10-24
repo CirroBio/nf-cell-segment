@@ -477,7 +477,7 @@ def main(anndata, cells_geo_json, image, pixel_size):
             dict(
                 name="StarDist Processed Image",
                 description="A segmented image with cell outlines and protein expression data",
-                zarr_fp="spatialdata.zarr.tar.gz",
+                zarr_fp="spatialdata.zarr.zip",
                 obs_set_paths=["Leiden Clusters"],
                 obs_set_names=["tables/table/obs/leiden"],
                 init_gene=sdata.table.var_names[0],
