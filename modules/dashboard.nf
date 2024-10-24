@@ -31,7 +31,7 @@ process spatialdata {
 
     """#!/bin/bash
 set -e
-spatialdata.py \
+python3 /nextflow-bin/spatialdata.py \
     --anndata "${anndata}" \
     --cells_geo_json "${cells_geo_json}" \
     --image "${image}" \
@@ -57,7 +57,7 @@ process configure_vitessce {
 
     """#!/bin/bash
 set -e
-configure_vitessce.py
+python3 /nextflow-bin/configure_vitessce.py
 """
 }
 
