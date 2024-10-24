@@ -277,8 +277,7 @@ def read_tif(
     scale_factor=2,
     chunk_x=300,
     chunk_y=300,
-    chunk_c=1,
-    dataset_name="Image"
+    chunk_c=1
 ) -> Tuple[SpatialData, dict]:
     """
     Read in a TIF file
@@ -384,26 +383,8 @@ def read_tif(
         tables=dict(table=table)
     )
 
-    # Show the first three channels
-    init_channels = dict(zip(
-        ["channel_a", "channel_b", "channel_c"],
-        range(len(channel_names))
-    ))
-    for kw, val in init_channels.items():
-        logger.info(f"{kw}: {channel_names[val]}")
-
-    # Set up keyword arguments for the configuration
-    vt_kwargs = dict(
-        dataset_name=dataset_name,
-        image_key="image",
-        rgb_a=[0, 0, 255],
-        rgb_b=[0, 255, 0],
-        rgb_c=[255, 0, 0],
-        mask_channels=mask_channels,
-        **init_channels
-    )
-
-    return sdata, vt_kwargs
+    # Return the SpatialData object and the channel names
+    return sdata, channel_names
 
 
 def format_spatial_image(
@@ -478,12 +459,11 @@ def main(anndata, cells_geo_json, image, pixel_size):
     # Read in the image, adding the annotated shapes
     # and table to the SpatialData object
     logger.info("Reading in the image")
-    sdata, vt_kwargs = read_tif(
+    sdata, channel_names = read_tif(
         image,
         table=table,
         shapes=shapes,
-        masks=masks,
-        dataset_name="StarDist Processed Image"
+        masks=masks
     )
 
     # Save to Zarr
@@ -493,7 +473,25 @@ def main(anndata, cells_geo_json, image, pixel_size):
     # Save the spatialdata kwargs to JSON
     logger.info("Saving spatialdata kwargs to JSON")
     with open("spatialdata.kwargs.json", "w") as f:
-        json.dump(vt_kwargs, f, indent=4)
+        json.dump(
+            dict(
+                name="StarDist Processed Image",
+                description="A segmented image with cell outlines and protein expression data",
+                zarr_fp="spatialdata.zarr.zip",
+                obs_set_paths=["Leiden Clusters"],
+                obs_set_names=["tables/table/obs/leiden"],
+                init_gene=sdata.table.var_names[0],
+                channel_names=channel_names,
+                mask_channels=["cell", "nucleus"],
+                image_key="image",
+                obs_type="cell",
+                feature_type="marker",
+                feature_value_type="expression",
+                spots_key="centroids",
+            ),
+            f,
+            indent=4
+        )
 
 
 if __name__ == "__main__":
