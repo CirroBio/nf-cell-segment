@@ -26,7 +26,7 @@ process get_pixel_size {
         path qupath_project
 
     output:
-        val "pixelWidth"
+        path "pixelWidth"
 
     script:
     template "get_pixel_size.py"

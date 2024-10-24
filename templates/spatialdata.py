@@ -424,8 +424,14 @@ def main(
     anndata="${anndata}",
     cells_geo_json="${cells_geo_json}",
     image="${image}",
-    pixel_size=float("${pixel_size}")
+    pixel_size="${pixel_size}"
 ):
+    
+    # Read in the pixel size value from the pixel_size file
+    logger.info(f"Reading in {pixel_size}")
+    with open(pixel_size, "r") as f:
+        pixel_size = float(f.read().strip())
+    logger.info(f"pixel_size is {pixel_size}")
 
     # Read in the AnnData object
     logger.info(f"Reading in {anndata}")

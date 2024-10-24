@@ -23,7 +23,7 @@ process spatialdata {
     path anndata
     path cells_geo_json
     path image
-    val pixel_size
+    path pixel_size
 
     output:
     path "spatialdata.zarr.zip", emit: zarr_zip
@@ -44,10 +44,8 @@ process configure_vitessce {
     output:
     path "spatialdata.vt.json"
 
-    """#!/bin/bash
-set -e
-configure_vitessce.py
-"""
+    script:
+    template "configure_vitessce.py"
 }
 
 
