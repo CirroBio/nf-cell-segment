@@ -17,7 +17,7 @@ process anndata {
 
 process spatialdata {
     container "${params.container_python}"
-    publishDir "${params.output_folder}/dashboard", mode: 'copy', overwrite: true, pattern: "*.zarr.zip"
+    publishDir "${params.output_folder}/dashboard", mode: 'copy', overwrite: true, pattern: "*.zarr.tar.gz"
 
     input:
     path anndata
@@ -26,7 +26,7 @@ process spatialdata {
     val pixel_size
 
     output:
-    path "spatialdata.zarr.zip", emit: zarr_zip
+    path "spatialdata.zarr.tar.gz", emit: zarr_tar
     path "spatialdata.kwargs.json", emit: kwargs
 
     """#!/bin/bash
@@ -36,9 +36,9 @@ spatialdata.py \
     --image "${image}" \
     --pixel_size "${pixel_size}"
 
-# Zip up the output
-echo "Zipping up the output"
-zip -r spatialdata.zarr.zip spatialdata.zarr
+# Tar up the output
+echo "Tarring up the output"
+tar -czf spatialdata.zarr.tar.gz spatialdata.zarr
 rm -rf spatialdata.zarr
     """
 }
