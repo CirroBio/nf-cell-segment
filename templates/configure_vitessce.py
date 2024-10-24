@@ -530,7 +530,7 @@ def format_vitessce(
     }
 
 
-if __name__ == "__main__":
+def main():
     # Read in the spatialdata.kwargs.json file
     with open("spatialdata.kwargs.json", "r") as f:
         vt_kwargs = json.load(f)
@@ -541,3 +541,6 @@ if __name__ == "__main__":
     # Save the configuration to JSON
     with open("spatialdata.vt.json", "w") as f:
         json.dump(vt_config, f, indent=4)
+
+
+main()
