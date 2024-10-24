@@ -1,6 +1,6 @@
 process leiden {
     container "${params.container_python}"
-    publishDir "${params.output_folder}/clustering", mode: 'copy', overwrite: true
+    publishDir "${params.output_folder}/cell_clustering", mode: 'copy', overwrite: true
 
     input:
     path "*"

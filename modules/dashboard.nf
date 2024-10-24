@@ -17,7 +17,7 @@ process anndata {
 
 process spatialdata {
     container "${params.container_python}"
-    publishDir "${params.output_folder}", mode: 'copy', overwrite: true
+    publishDir "${params.output_folder}/dashboard", mode: 'copy', overwrite: true, pattern: "*.zip"
 
     input:
     path anndata
