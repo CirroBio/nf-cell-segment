@@ -29,19 +29,8 @@ process spatialdata {
     path "spatialdata.zarr.zip", emit: zarr_zip
     path "spatialdata.kwargs.json", emit: kwargs
 
-    """#!/bin/bash
-set -e
-spatialdata.py \
-    --anndata "${anndata}" \
-    --cells_geo_json "${cells_geo_json}" \
-    --image "${image}" \
-    --pixel_size "${pixel_size}"
-
-# Zip up the output
-echo "Zipping up the output"
-zip -r spatialdata.zarr.zip spatialdata.zarr
-rm -rf spatialdata.zarr
-    """
+    script:
+    template "spatialdata.py"
 }
 
 

@@ -1,5 +1,6 @@
 #!/usr/local/bin/python3
 
+import shutil
 import click
 from geopandas import GeoDataFrame
 from numpy import array
@@ -419,12 +420,12 @@ def format_spatial_image(
     return image
 
 
-@click.command()
-@click.option("--anndata", type=str, help="Path to the AnnData file")
-@click.option("--cells_geo_json", type=str, help="Path to the cell geometry JSON")
-@click.option("--image", type=str, help="Path to the image file")
-@click.option("--pixel_size", type=float, help="Pixel size in microns")
-def main(anndata, cells_geo_json, image, pixel_size):
+def main(
+    anndata="${anndata}",
+    cells_geo_json="${cells_geo_json}",
+    image="${image}",
+    pixel_size=float("${pixel_size}")
+):
 
     # Read in the AnnData object
     logger.info(f"Reading in {anndata}")
@@ -470,6 +471,19 @@ def main(anndata, cells_geo_json, image, pixel_size):
     logger.info("Saving to Zarr")
     sdata.to_zarr("spatialdata.zarr")
 
+    # Zip up the spatialdata.zarr folder using shutil
+    logger.info("Zipping up the Zarr folder")
+    shutil.make_archive(
+        "spatialdata.zarr",
+        "zip",
+        root_dir=".",
+        base_dir="spatialdata.zarr"
+    )
+
+    # Remove the spatialdata.zarr folder
+    logger.info("Removing the Zarr folder")
+    shutil.rmtree("spatialdata.zarr")
+
     # Save the spatialdata kwargs to JSON
     logger.info("Saving spatialdata kwargs to JSON")
     with open("spatialdata.kwargs.json", "w") as f:
@@ -494,5 +508,4 @@ def main(anndata, cells_geo_json, image, pixel_size):
         )
 
 
-if __name__ == "__main__":
-    main()
+main()
