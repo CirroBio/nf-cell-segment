@@ -6,7 +6,6 @@ from numpy import array
 from rasterio.features import rasterize
 from shapely import Polygon, Point
 from skimage.io import imread as sk_imread
-from spatialdata import SpatialData
 from multiscale_spatial_image.multiscale_spatial_image import MultiscaleSpatialImage
 from multiscale_spatial_image import to_multiscale
 from pathlib import Path
@@ -20,6 +19,7 @@ import dask.array as da
 import gzip
 import json
 import logging
+import spatialdata
 import sys
 
 # Set up logging
@@ -278,7 +278,7 @@ def read_tif(
     chunk_x=300,
     chunk_y=300,
     chunk_c=1
-) -> Tuple[SpatialData, dict]:
+) -> Tuple[spatialdata.SpatialData, dict]:
     """
     Read in a TIF file
     """
@@ -377,7 +377,7 @@ def read_tif(
 
     # Convert to SpatialData
     logger.info("Converting to SpatialData")
-    sdata = SpatialData(
+    sdata = spatialdata.SpatialData(
         images=dict(image=image),
         shapes=dict(shapes=shapes),
         tables=dict(table=table)

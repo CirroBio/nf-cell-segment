@@ -30,6 +30,7 @@ process spatialdata {
     path "spatialdata.kwargs.json", emit: kwargs
 
     """#!/bin/bash
+set -e
 spatialdata.py \
     --anndata "${anndata}" \
     --cells_geo_json "${cells_geo_json}" \
