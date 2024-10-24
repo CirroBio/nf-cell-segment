@@ -102,7 +102,6 @@ def make_summary_plots(adata):
     Make summary plots of the clustering results using the scanpy library.
     These include:
         - A UMAP plot of the clusters
-        - A violin plot of the cluster assignments
         - A dot plot of the cluster assignments
 
     Parameters
@@ -128,10 +127,6 @@ def make_summary_plots(adata):
         palette="Set1",
         save='.pdf'
     )
-
-    # Make a violin plot
-    logger.info("Making a violin plot")
-    sc.pl.violin(adata, adata.var_names, groupby='leiden', save='.pdf')
 
     # Make a dot plot
     logger.info("Making a dot plot")
