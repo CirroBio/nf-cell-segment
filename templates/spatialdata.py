@@ -475,7 +475,7 @@ def main(
 
     # Save to Zarr
     logger.info("Saving to Zarr")
-    sdata.to_zarr("spatialdata.zarr")
+    sdata.write("spatialdata.zarr")
 
     # Zip up the spatialdata.zarr folder using shutil
     logger.info("Zipping up the Zarr folder")
