@@ -380,7 +380,7 @@ def read_tif(
     logger.info("Converting to SpatialData")
     sdata = spatialdata.SpatialData(
         images=dict(image=image),
-        shapes=dict(shapes=shapes),
+        shapes=shapes,
         tables=dict(table=table)
     )
 
