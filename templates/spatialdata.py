@@ -474,8 +474,13 @@ def main(
     )
 
     # Save to Zarr
-    logger.info("Saving to Zarr")
-    sdata.write("spatialdata.zarr")
+    zarr_path = "spatialdata.zarr"
+    logger.info(f"Saving to {zarr_path}")
+    sdata.write(zarr_path)
+
+    # Fix the omero metadata for any images
+    logger.info(f"Fixing Zarr image metadata for {zarr_path}")
+    fix_zarr_image_metadata(zarr_path)
 
     # Zip up the spatialdata.zarr folder using shutil
     logger.info("Zipping up the Zarr folder")
@@ -512,6 +517,82 @@ def main(
             f,
             indent=4
         )
+
+
+def fix_zarr_image_metadata(zarr_path: str):
+    """
+    Given a zarr store, fill out any missing fields
+    in the omero field of the image attributes.
+    """
+
+    # Iterate over every .zattr or zmetadata file
+    for pattern in ["zmetadata", ".zattrs"]:
+        for file in Path(zarr_path).rglob(pattern):
+
+            # Open the object
+            obj = json.load(file.open())
+
+            # Recurse into the object, make updates, and
+            # return a bool indicating if the object was changed
+            if _update_omero_attr(obj):
+
+                # Write out the updated object
+                with file.open("w") as handle:
+                    json.dump(obj, handle, indent=4)
+
+
+def _update_omero_attr(obj):
+    """
+    If the omero attribute is present, fill in any missing fields.
+    """
+
+    _default_channel = {
+        "color": "FFFFFF",
+        "window": {
+            kw: 0
+            for kw in ['start', 'min', 'max', 'end']
+        }
+    }
+
+    _default_rdefs = {
+        "defaultT": 0,
+        "defaultZ": 0,
+        "name": "global"
+    }
+
+    was_modified = False
+
+    if isinstance(obj, dict) and "omero" in obj:
+        logger.info("Updating omero attribute")
+
+        if "channels" in obj["omero"]:
+            for channel in obj["omero"]["channels"]:
+                for kw, val in _default_channel.items():
+                    if kw not in channel:
+                        channel[kw] = val
+                        was_modified = True
+
+            if "rdefs" not in obj["omero"]:
+                obj["omero"]["rdefs"] = _default_rdefs
+                was_modified = True
+            else:
+                for kw, val in _default_rdefs.items():
+                    if kw not in obj["omero"]["rdefs"]:
+                        obj["omero"]["rdefs"][kw] = val
+                        was_modified = True
+
+        logger.info(obj["omero"])
+
+    if isinstance(obj, dict):
+        for val in obj.values():
+            if _update_omero_attr(val):
+                was_modified = True
+    elif isinstance(obj, list):
+        for val in obj:
+            if _update_omero_attr(val):
+                was_modified = True
+
+    return was_modified
 
 
 main()
