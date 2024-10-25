@@ -42,9 +42,9 @@ def format_vitessce(
     # That is in addition to the mask channel.
     # The left-hand image will get A, B, C, D, and the right-hand image will get E, F, G, H.
     if "cell" in mask_channels:
-        mask_ix = mask_channels.index("cell")
+        mask_ix = channel_names.index("cell")
     elif "nucleus" in mask_channels:
-        mask_ix = mask_channels.index("nucleus")
+        mask_ix = channel_names.index("nucleus")
     else:
         raise ValueError("The mask channel must be either 'cell' or 'nucleus'")
     
