@@ -499,7 +499,7 @@ def main(
                 description="A segmented image with cell outlines and protein expression data",
                 zarr_fp="spatialdata.zarr.zip",
                 obs_set_names=["Leiden Clusters"],
-                obs_set_paths=["tables/table/obs/leiden"],
+                obs_set_paths=["obs/leiden"],
                 init_gene=sdata.table.var_names[0],
                 channel_names=channel_names,
                 mask_channels=["cell", "nucleus"],
