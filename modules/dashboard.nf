@@ -42,7 +42,7 @@ process configure_vitessce {
     path "spatialdata.kwargs.json"
 
     output:
-    path "spatialdata.vt.json"
+    path "*.vt.json"
 
     script:
     template "configure_vitessce.py"
