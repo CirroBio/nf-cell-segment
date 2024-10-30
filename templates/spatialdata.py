@@ -42,7 +42,7 @@ def read_table(fp: str) -> TableModel:
         adata,
         region="cell_boundaries",
         region_key="region",
-        instance_key="Object ID"
+        instance_key="object_id"
     )
 
 
@@ -82,7 +82,7 @@ def parse_geo_json(
 def make_spatial_points(
     table: ad.AnnData,
     pixel_size=1.0,
-    instance_key="cell_id"
+    instance_key="object_id"
 ):
 
     scale = Scale(
@@ -459,7 +459,7 @@ def main(
         centroids=make_spatial_points(
             table,
             pixel_size=pixel_size,
-            instance_key="Object ID"
+            instance_key="object_id"
         )
     )
 

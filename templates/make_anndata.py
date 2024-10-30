@@ -19,6 +19,22 @@ def read_csv(fp: str, label: str) -> pd.DataFrame:
     return df
 
 
+def sanitize_cnames(cname: str) -> str:
+    """
+    Sanitize column names to snakecase.
+    """
+    cname = (
+        cname
+        .lower()
+        .replace(" ", "_")
+        .replace(".", "_")
+    )
+    while "__" in cname:
+        cname = cname.replace("__", "_")
+
+    return cname
+
+
 def main(
     spatial = "${spatial}",
     attributes = "${attributes}",
@@ -40,10 +56,14 @@ def main(
     logger.info("Merging cluster data with attributes")
     obs = attributes.merge(clusters, left_index=True, right_index=True)
 
+    # The columns of obs will be sanitized to snakecase
+    # Note that "Object ID" will be renamed to "object_id"
+    obs = obs.rename(columns=sanitize_cnames)
+
     # Create the AnnData object
     logger.info("Creating AnnData object")
     adata = AnnData(
-        X=intensities.values,
+        X=intensities,
         obs=obs,
         obsm={"spatial": spatial.values}
     )
