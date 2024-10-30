@@ -8,18 +8,14 @@ from typing import List
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger()
 
-# All non-mask channels will be shown in cycles of semi-magenta, semi-cyan, and semi-yellow
+# Default channels will be shown in cycles of magenta, cyan, and yellow
 color_wheel = [
-    [0, 128, 128],
-    [128, 0, 128],
-    [128, 128, 0]
+    [0, 255, 255],
+    [255, 0, 255],
+    [255, 255, 0]
 ]
-semi_white = [128, 128, 128]
 
-# The mask channel (cell outlines) will be shown in semi-white with low transparency
-mask_channel = [128, 128, 128]
-
-def format_vitessce(
+def format_vitessce_segmentation(
     name: str,
     description: str,
     zarr_fp: str,
@@ -47,14 +43,9 @@ def format_vitessce(
         mask_ix = channel_names.index("nucleus")
     else:
         raise ValueError("The mask channel must be either 'cell' or 'nucleus'")
-    
+
     # Find the non-mask channels
     image_ixs = [i for i, c in enumerate(channel_names) if c not in mask_channels]
-
-    # Only take the first three non-mask channels
-    assert len(image_ixs) >= 3, "There must be at least three non-mask channels to display"
-    if len(image_ixs) > 3:
-        image_ixs = image_ixs[:3]
 
     return {
         "version": schema_version,
@@ -75,43 +66,6 @@ def format_vitessce(
                         "options": {
                             "path": f'images/{image_key}'
                         }
-                    },
-                    {
-                        "url": zarr_fp,
-                        "fileType": "obsFeatureMatrix.spatialdata.zarr",
-                        "coordinationValues": {
-                            "obsType": obs_type
-                        },
-                        "options": {
-                            "path": "tables/table/X"
-                        }
-                    },
-                    {
-                        "url": zarr_fp,
-                        "fileType": "obsSpots.spatialdata.zarr",
-                        "coordinationValues": {
-                            "obsType": obs_type
-                        },
-                        "options": {
-                            "path": f"shapes/{spots_key}",
-                            "tablePath": "tables/table"
-                        }
-                    },
-                    {
-                        "url": zarr_fp,
-                        "fileType": "obsSets.spatialdata.zarr",
-                        "coordinationValues": {
-                            "obsType": obs_type
-                        },
-                        "options": {
-                            "obsSets": [
-                                {
-                                    "name": name,
-                                    "path": f"tables/table/{path}"
-                                }
-                                for path, name in zip(obs_set_paths, obs_set_names)
-                            ]
-                        }
                     }
                 ]
             }
@@ -120,23 +74,6 @@ def format_vitessce(
             "dataset": {
                 "A": "A"
             },
-            "featureSelection": {
-                "A": [init_gene],
-                "B": [init_gene]
-            },
-            "obsType": {
-                "A": obs_type
-            },
-            "featureType": {
-                "A": feature_type
-            },
-            "featureValueType": {
-                "A": feature_value_type
-            },
-            "obsColorEncoding": {
-                "A": "cellSetSelection",
-                "B": "geneSelection"
-            },
             "spatialTargetZ": {
                 "A": 0
             },
@@ -144,273 +81,105 @@ def format_vitessce(
                 "A": 0
             },
             "imageLayer": {
-                "A": "__dummy__",
-                "B": "__dummy__"
+                "A": "__dummy__"
             },
             "fileUid": {
-                "A": image_key,
-                "B": image_key
+                "A": "image"
             },
             "spatialLayerOpacity": {
-                "A": 1,
-                "B": 0.5,
-                "C": 1,
-                "D": 0.5
+                "A": 1
             },
             "spatialLayerVisible": {
-                "A": True,
-                "B": True,
-                "C": True,
-                "D": True
+                "A": True
             },
             "photometricInterpretation": {
-                "A": "BlackIsZero",
-                "B": "BlackIsZero"
+                "A": "BlackIsZero"
             },
             "imageChannel": {
                 "A": "__dummy__",
-                "B": "__dummy__"
+                "B": "__dummy__",
+                "C": "__dummy__"
             },
             "spatialTargetC": {
                 "A": mask_ix,
-                "B": image_ixs[0],
-                "C": image_ixs[1],
-                "D": image_ixs[2],
-                "E": mask_ix,
-                "F": image_ixs[0],
-                "G": image_ixs[1],
-                "H": image_ixs[2]
+                "B": image_ixs[0] if len(image_ixs) > 0 else None,
+                "C": image_ixs[1] if len(image_ixs) > 1 else None
             },
             "spatialChannelColor": {
-                "A": semi_white,
-                "B": color_wheel[0],
-                "C": color_wheel[1],
-                "D": color_wheel[2],
-                "E": semi_white,
-                "F": color_wheel[0],
-                "G": color_wheel[1],
-                "H": color_wheel[2]
+                "A": color_wheel[0],
+                "B": color_wheel[1],
+                "C": color_wheel[2]
             },
             "spatialChannelWindow": {
                 "A": None,
                 "B": None,
-                "C": None,
-                "D": None,
-                "E": None,
-                "F": None,
-                "G": None,
-                "H": None
+                "C": None
             },
             "spatialChannelVisible": {
                 "A": True,
                 "B": True,
-                "C": True,
-                "D": True,
-                "E": True,
-                "F": True,
-                "G": True,
-                "H": True
+                "C": True
             },
             "spatialChannelOpacity": {
-                "A": 0.25,
-                "B": 0.75,
-                "C": 0.75,
-                "D": 0.75,
-                "E": 0.25,
-                "F": 0.75,
-                "G": 0.75,
-                "H": 0.75
-            },
-            "spotLayer": {
-                "A": "__dummy__",
-                "B": "__dummy__"
-            },
-            "spatialSpotRadius": {
-                "A": 20,
-                "B": 20
-            },
-            "spatialLayerColormap": {
-                "A": None,
-                "B": None
-            },
-            "featureValueColormap": {
-                "A": "plasma",
-                "B": "plasma"
-            },
-            "featureValueColormapRange": {
-                "A": [
-                    0,
-                    1.0
-                ],
-                "B": [
-                    0,
-                    1.0
-                ]
+                "A": 1,
+                "B": 1,
+                "C": 1
             },
             "metaCoordinationScopes": {
                 "A": {
                     "spatialTargetZ": "A",
                     "spatialTargetT": "A",
-                    "obsType": "A",
-                    "imageLayer": "A",
-                    "spotLayer": "A",
-                    "obsColorEncoding": "A",
-                    "featureSelection": "A"
-                },
-                "B": {
-                    "spatialTargetZ": "A",
-                    "spatialTargetT": "A",
-                    "obsType": "A",
-                    "imageLayer": "B",
-                    "spotLayer": "B",
-                    "obsColorEncoding": "B",
-                    "featureSelection": "B"
+                    "imageLayer": "A"
                 }
             },
             "metaCoordinationScopesBy": {
                 "A": {
                     "imageLayer": {
-                        "fileUid": {
-                            "A": "A"
-                        },
-                        "spatialLayerOpacity": {
-                            "A": "A"
-                        },
-                        "spatialLayerVisible": {
-                            "A": "A"
-                        },
-                        "photometricInterpretation": {
-                            "A": "A"
-                        },
-                        "spatialLayerColormap": {
-                            "A": "A"
-                        },
-                        "imageChannel": {
-                            "A": [
-                                "A"
-                            ]
-                        }
+                    "fileUid": {
+                        "A": "A"
                     },
-                    "spotLayer": {
-                        "spatialLayerOpacity": {
-                            "A": "B"
-                        },
-                        "spatialLayerVisible": {
-                            "A": "B"
-                        },
-                        "spatialLayerColor": {
-                            "A": "A"
-                        },
-                        "obsColorEncoding": {
-                            "A": "A"
-                        },
-                        "spatialSpotRadius": {
-                            "A": "A"
-                        }
+                    "spatialLayerOpacity": {
+                        "A": "A"
+                    },
+                    "spatialLayerVisible": {
+                        "A": "A"
+                    },
+                    "photometricInterpretation": {
+                        "A": "A"
                     },
                     "imageChannel": {
-                        "spatialTargetC": {
-                            "A": "A",
-                            "B": "B",
-                            "C": "C",
-                            "D": "D"
-                        },
-                        "spatialChannelColor": {
-                            "A": "A",
-                            "B": "B",
-                            "C": "C",
-                            "D": "D"
-                        },
-                        "spatialChannelWindow": {
-                            "A": "A",
-                            "B": "B",
-                            "C": "C",
-                            "D": "D"
-                        },
-                        "spatialChannelVisible": {
-                            "A": "A",
-                            "B": "B",
-                            "C": "C",
-                            "D": "D"
-                        },
-                        "spatialChannelOpacity": {
-                            "A": "A",
-                            "B": "B",
-                            "C": "C",
-                            "D": "D"
-                        }
+                        "A": [
+                            "A",
+                            "B",
+                            "C"
+                        ]
                     }
-                },
-                "B": {
-                    "imageLayer": {
-                        "fileUid": {
-                            "B": "B"
-                        },
-                        "spatialLayerOpacity": {
-                            "B": "C"
-                        },
-                        "spatialLayerVisible": {
-                            "B": "C"
-                        },
-                        "photometricInterpretation": {
-                            "B": "B"
-                        },
-                        "spatialLayerColormap": {
-                            "B": "B"
-                        },
-                        "imageChannel": {
-                            "B": [
-                                "B"
-                            ]
-                        }
-                    },
-                    "spotLayer": {
-                        "spatialLayerOpacity": {
-                            "B": "D"
-                        },
-                        "spatialLayerVisible": {
-                            "B": "D"
-                        },
-                        "spatialLayerColor": {
-                            "B": "B"
-                        },
-                        "obsColorEncoding": {
-                            "B": "B"
-                        },
-                        "spatialSpotRadius": {
-                            "B": "B"
-                        }
                     },
                     "imageChannel": {
                         "spatialTargetC": {
-                            "E": "E",
-                            "F": "F",
-                            "G": "G",
-                            "H": "H"
+                            "A": "A",
+                            "B": "B",
+                            "C": "C"
                         },
                         "spatialChannelColor": {
-                            "E": "E",
-                            "F": "F",
-                            "G": "G",
-                            "H": "H"
+                            "A": "A",
+                            "B": "B",
+                            "C": "C"
                         },
                         "spatialChannelWindow": {
-                            "E": "E",
-                            "F": "F",
-                            "G": "G",
-                            "H": "H"
+                            "A": "A",
+                            "B": "B",
+                            "C": "C"
                         },
                         "spatialChannelVisible": {
-                            "E": "E",
-                            "F": "F",
-                            "G": "G",
-                            "H": "H"
+                            "A": "A",
+                            "B": "B",
+                            "C": "C"
                         },
                         "spatialChannelOpacity": {
-                            "E": "E",
-                            "F": "F",
-                            "G": "G",
-                            "H": "H"
+                            "A": "A",
+                            "B": "B",
+                            "C": "C"
                         }
                     }
                 }
@@ -418,7 +187,7 @@ def format_vitessce(
         },
         "layout": [
             {
-                "component": "spatialBeta",
+            "component": "spatialBeta",
                 "coordinationScopes": {
                     "dataset": "A",
                     "metaCoordinationScopes": [
@@ -430,8 +199,8 @@ def format_vitessce(
                 },
                 "x": 0,
                 "y": 0,
-                "w": 4,
-                "h": 6
+                "w": 9,
+                "h": 12
             },
             {
                 "component": "layerControllerBeta",
@@ -444,86 +213,10 @@ def format_vitessce(
                         "A"
                     ]
                 },
-                "x": 0,
-                "y": 6,
-                "w": 4,
-                "h": 3
-            },
-            {
-                "component": "spatialBeta",
-                "coordinationScopes": {
-                    "dataset": "A",
-                    "metaCoordinationScopes": [
-                        "B"
-                    ],
-                    "metaCoordinationScopesBy": [
-                        "B"
-                    ]
-                },
-                "x": 4,
+                "x": 9,
                 "y": 0,
-                "w": 4,
-                "h": 6
-            },
-            {
-                "component": "layerControllerBeta",
-                "coordinationScopes": {
-                    "dataset": "A",
-                    "metaCoordinationScopes": [
-                        "B"
-                    ],
-                    "metaCoordinationScopesBy": [
-                        "B"
-                    ]
-                },
-                "x": 4,
-                "y": 6,
-                "w": 4,
-                "h": 3
-            },
-            {
-                "component": "heatmap",
-                "coordinationScopes": {
-                    "dataset": "A",
-                    "featureSelection": "B"
-                },
-                "x": 0,
-                "y": 9,
-                "w": 8,
-                "h": 3
-            },
-            {
-                "component": "obsSetSizes",
-                "coordinationScopes": {
-                    "obsType": "A",
-                    "dataset": "A"
-                },
-                "x": 8,
-                "y": 0,
-                "w": 2,
-                "h": 6
-            },
-            {
-                "component": "featureList",
-                "coordinationScopes": {
-                    "dataset": "A",
-                    "featureSelection": "B"
-                },
-                "x": 10,
-                "y": 0,
-                "w": 2,
-                "h": 6
-            },
-            {
-                "component": "obsSetFeatureValueDistribution",
-                "coordinationScopes": {
-                    "dataset": "A",
-                    "featureSelection": "B"
-                },
-                "x": 8,
-                "y": 6,
-                "w": 4,
-                "h": 6
+                "w": 3,
+                "h": 12
             }
         ],
         "initStrategy": "auto"
@@ -535,12 +228,14 @@ def main():
     with open("spatialdata.kwargs.json", "r") as f:
         vt_kwargs = json.load(f)
 
-    # Configure the viewer
-    vt_config = format_vitessce(**vt_kwargs)
-
-    # Save the configuration to JSON
-    with open("spatialdata.vt.json", "w") as f:
-        json.dump(vt_config, f, indent=4)
+    # Configure the viewer twice, once to show segmentation
+    # and a second time to show cell measurements
+    for prefix, vt_config in [
+        ("segmentation", format_vitessce_segmentation(**vt_kwargs))
+    ]:
+        # Save the configuration to JSON
+        with open(f"{prefix}.vt.json", "w") as f:
+            json.dump(vt_config, f, indent=4)
 
 
 main()
