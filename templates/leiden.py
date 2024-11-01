@@ -144,11 +144,12 @@ def main():
 
     # Scale the data as needed
     logger.info("Scaling the data")
+    logger.info("scaling=${params.scaling}, clip_lower=${params.clip_lower}, clip_upper=${params.clip_upper}")
     df = scale_intensities(
         df,
         scaling="${params.scaling}",
-        clip_lower=${params.clip_lower},
-        clip_upper=${params.clip_upper}
+        clip_lower=float("${params.clip_lower}"),
+        clip_upper=float("${params.clip_upper}")
     )
 
     # Drop any columns which have NaN values
@@ -167,10 +168,11 @@ def main():
 
     # Cluster the data
     logger.info("Clustering the data")
+    logger.info("resolution=${params.cluster_resolution}, n_neighbors=${params.cluster_n_neighbors}")
     leiden(
         adata,
-        resolution=${params.cluster_resolution},
-        n_neighbors=${params.cluster_n_neighbors}
+        resolution=float("${params.cluster_resolution}"),
+        n_neighbors=float("${params.cluster_n_neighbors}")
     )
 
     # Write out the cluster assignments

@@ -1,11 +1,10 @@
 #!/usr/local/bin/python3
 
 import shutil
-import click
 from geopandas import GeoDataFrame
 from numpy import array
 from rasterio.features import rasterize
-from shapely import Polygon, Point
+from shapely import Polygon
 from skimage.io import imread as sk_imread
 from multiscale_spatial_image.multiscale_spatial_image import MultiscaleSpatialImage
 from multiscale_spatial_image import to_multiscale
@@ -82,26 +81,24 @@ def parse_geo_json(
 def make_spatial_points(
     table: ad.AnnData,
     pixel_size=1.0,
-    instance_key="object_id"
-):
+    instance_key="object_id",
+    radius=20
+) -> ShapesModel:
 
     scale = Scale(
         [1.0 / pixel_size, 1.0 / pixel_size],
         axes=("x", "y")
     )
 
-    # Create a GeoDataFrame to encode the points
-    logger.info("Converting spatial points to GeoDataFrame")
-    geo_df = GeoDataFrame(
-        geometry=[
-            Point(x / pixel_size, y / pixel_size)
-            for x, y in table.obsm["spatial"]
-        ]
+    points = ShapesModel.parse(
+        table.obsm["spatial"],
+        geometry=0,
+        radius=radius,
+        transformations={"global": scale},
+        index=table.obs[instance_key].copy(),
     )
-    geo_df = geo_df.assign(radius=20)
-    geo_df.index = table.obs[instance_key]
 
-    return ShapesModel.parse(geo_df, transformations={"global": scale})
+    return points
 
 
 def read_tif_channel_names(tmp_file: str, n_channels: int) -> List[str]:
