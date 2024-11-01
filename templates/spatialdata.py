@@ -497,8 +497,6 @@ def main(
     with open("spatialdata.kwargs.json", "w") as f:
         json.dump(
             dict(
-                name="StarDist Processed Image",
-                description="A segmented image with cell outlines and protein expression data",
                 zarr_fp="spatialdata.zarr.zip",
                 obs_set_names=["Leiden Clusters"],
                 obs_set_paths=["obs/leiden"],

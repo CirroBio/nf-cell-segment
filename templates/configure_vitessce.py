@@ -16,8 +16,6 @@ color_wheel = [
 ]
 
 def format_vitessce_segmentation(
-    name: str,
-    description: str,
     zarr_fp: str,
     image_key: str,
     channel_names: list,
@@ -26,6 +24,8 @@ def format_vitessce_segmentation(
     obs_type = "cell",
     **kwargs
 ):
+    name = "StarDist Segmentation"
+    description = "Image display with cell outlines from StarDist"
     
     # Set up the channels that will be displayed.
     # Note that this includes the channels which are shown across both spatial plots.
@@ -219,8 +219,6 @@ def format_vitessce_segmentation(
 
 
 def format_vitessce_cell_measurements(
-    name: str,
-    description: str,
     zarr_fp: str,
     image_key: str,
     obs_set_paths: List[str],
@@ -233,6 +231,9 @@ def format_vitessce_cell_measurements(
     feature_value_type = "expression",
     **kwargs
 ):
+    name = "Cell Measurements"
+    description = "Image display with average channel intensity for each cell"
+
     return {
             "version": schema_version,
             "name": name,
