@@ -474,7 +474,7 @@ def main(
     # Save to Zarr
     zarr_path = "spatialdata.zarr"
     logger.info(f"Saving to {zarr_path}")
-    sdata.write(zarr_path, format=ShapesFormatV01)
+    sdata.write(zarr_path, format=ShapesFormatV01())
 
     # Fix the omero metadata for any images
     logger.info(f"Fixing Zarr image metadata for {zarr_path}")
