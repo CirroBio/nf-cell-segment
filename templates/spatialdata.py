@@ -11,6 +11,7 @@ from multiscale_spatial_image import to_multiscale
 from pathlib import Path
 from spatialdata.models import ShapesModel, TableModel, Image2DModel
 from spatialdata.transformations.transformations import Scale
+from spatialdata._io.format import ShapesFormatV01
 from tifffile import TiffFile, TiffPage
 from typing import List, Mapping, Tuple, Union
 from xml.etree import ElementTree
@@ -473,7 +474,7 @@ def main(
     # Save to Zarr
     zarr_path = "spatialdata.zarr"
     logger.info(f"Saving to {zarr_path}")
-    sdata.write(zarr_path)
+    sdata.write(zarr_path, format=ShapesFormatV01)
 
     # Fix the omero metadata for any images
     logger.info(f"Fixing Zarr image metadata for {zarr_path}")
