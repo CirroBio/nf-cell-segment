@@ -172,7 +172,7 @@ def main():
     leiden(
         adata,
         resolution=float("${params.cluster_resolution}"),
-        n_neighbors=float("${params.cluster_n_neighbors}")
+        n_neighbors=int("${params.cluster_n_neighbors}")
     )
 
     # Write out the cluster assignments
