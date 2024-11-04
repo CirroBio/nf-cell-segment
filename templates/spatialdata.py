@@ -88,7 +88,7 @@ def parse_geo_json(
 def make_spatial_points(
     table: ad.AnnData,
     instance_key="object_id",
-    radius=20,
+    radius=10,
     pixel_size=1.0
 ) -> ShapesModel:
 

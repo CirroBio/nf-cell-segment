@@ -229,6 +229,7 @@ def format_vitessce_cell_measurements(
     feature_type = "marker",
     spots_key = "centroids",
     feature_value_type = "expression",
+    radius = 10,
     **kwargs
 ):
     name = "Cell Measurements"
@@ -381,8 +382,8 @@ def format_vitessce_cell_measurements(
                     "B": "__dummy__"
                 },
                 "spatialSpotRadius": {
-                    "A": 20,
-                    "B": 20
+                    "A": radius,
+                    "B": radius
                 },
                 "spatialLayerColormap": {
                     "A": None,
