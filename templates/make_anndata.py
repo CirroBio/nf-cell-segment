@@ -39,7 +39,8 @@ def main(
     spatial = "${spatial}",
     attributes = "${attributes}",
     clusters = "${clusters}",
-    intensities = "${intensities}"
+    intensities = "${intensities}",
+    instance_key = "${params.instance_key}"
 ):
     spatial = read_csv(spatial, "spatial data")
     attributes = read_csv(attributes, "attributes")
@@ -59,6 +60,19 @@ def main(
     # The columns of obs will be sanitized to snakecase
     # Note that "Object ID" will be renamed to "object_id"
     obs = obs.rename(columns=sanitize_cnames)
+
+    # Make sure that the instance_key (i.e. "object_id") is one of the columns
+    if not instance_key in obs.columns:
+        raise ValueError(f"The column '{instance_key}' must be present in the attributes file")
+    
+    # Make sure that all of the values in the instance_key column are unique
+    if not obs[instance_key].is_unique:
+        raise ValueError(f"The values in the column '{instance_key}' must be unique")
+
+    # Use the values in obs["object_id"] as the index, but also
+    # keep it as a column
+    obs = obs.set_index(instance_key, drop=False)
+    intensities.index = obs.index
 
     # Create the AnnData object
     logger.info("Creating AnnData object")

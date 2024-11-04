@@ -28,7 +28,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger()
 
 
-def read_table(fp: str) -> TableModel:
+def read_table(fp: str, instance_key="${params.instance_key}") -> TableModel:
     """
     Read in the tablular elements of the spatial data
     and convert to a TableModel object.
@@ -38,11 +38,17 @@ def read_table(fp: str) -> TableModel:
     adata.obs["region"] = "cell_boundaries"
     adata.obs["region"] = adata.obs["region"].astype("category")
 
+    logger.info(f"Using instance_key={instance_key}")
+
+    # Make sure that the instance key is present in obs
+    if not instance_key in adata.obs.columns:
+        raise ValueError(f"Instance key {instance_key} not found in obs")
+
     return TableModel.parse(
         adata,
         region="cell_boundaries",
         region_key="region",
-        instance_key="object_id"
+        instance_key=instance_key
     )
 
 
