@@ -81,15 +81,11 @@ def parse_geo_json(
 
 def make_spatial_points(
     table: ad.AnnData,
-    pixel_size=1.0,
     instance_key="object_id",
     radius=20
 ) -> ShapesModel:
 
-    scale = Scale(
-        [1.0 / pixel_size, 1.0 / pixel_size],
-        axes=("x", "y")
-    )
+    scale = Scale([1.0, 1.0], axes=("x", "y"))
 
     points = ShapesModel.parse(
         table.obsm["spatial"],
@@ -456,7 +452,6 @@ def main(
     shapes = dict(
         centroids=make_spatial_points(
             table,
-            pixel_size=pixel_size,
             instance_key="object_id"
         )
     )
