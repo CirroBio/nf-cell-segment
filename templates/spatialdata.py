@@ -484,6 +484,13 @@ def main(
     logger.info(f"Fixing Zarr image metadata for {zarr_path}")
     fix_zarr_image_metadata(zarr_path)
 
+    # Duplicate the {zarr_path}/tables/ folder to {zarr_path}/table/
+    logger.info("Duplicating the tables folder")
+    shutil.copytree(
+        zarr_path + "/tables",
+        zarr_path + "/table"
+    )
+
     # Zip up the spatialdata.zarr folder using shutil
     logger.info("Zipping up the Zarr folder")
     shutil.make_archive(
