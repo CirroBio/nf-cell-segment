@@ -2,25 +2,10 @@
 
 nextflow.enable.dsl = 2
 
-process stardist {
-    container "${params.container}"
-    publishDir "${params.output_folder}", mode: 'copy', overwrite: true
-
-    input:
-        path script
-        path seg_model
-        path "input.tiff"
-        path stardist_jar
-
-    output:
-        path "measurements.csv.gz"
-        path "cells.geo.json.gz"
-        path "input.tiff"
-        path "*"
-
-    script:
-    template "stardist.sh"
-}
+include { stardist } from './modules/stardist.nf'
+include { cluster } from './modules/cluster.nf'
+include { dashboard } from './modules/dashboard.nf'
+import groovy.json.JsonSlurper
 
 workflow {
 
@@ -42,7 +27,18 @@ Parameters:
     model:          ${params.model}
     output_folder:  ${params.output_folder}
     container:      ${params.container}
-    args:           ${params.args}
+    pixelSize:      ${params.pixelSize}
+    channels:       ${params.channels}
+    cellExpansion:  ${params.cellExpansion}
+    cellConstrainScale: ${params.cellConstrainScale}
+    build_dashboard:${params.build_dashboard}
+    cluster_by:     ${params.cluster_by}
+    cluster_method: ${params.cluster_method}
+    cluster_resolution: ${params.cluster_resolution}
+    cluster_n_neighbors: ${params.cluster_n_neighbors}
+    scaling:        ${params.scaling}
+    clip_lower:     ${params.clip_lower}
+    clip_upper:     ${params.clip_upper}
     """
 
     input_tiff = file(
@@ -68,5 +64,21 @@ Parameters:
         input_tiff,
         stardist_jar
     )
+
+    if(params.build_dashboard){
+
+        cluster(stardist.out.intensities)
+
+        dashboard(
+            stardist.out.spatial,
+            stardist.out.attributes,
+            cluster.out.clusters,
+            cluster.out.scaled_data,
+            stardist.out.cells_geo_json,
+            input_tiff,
+            stardist.out.pixel_size
+        )
+
+    }
 
 }
