@@ -3,11 +3,17 @@
 import pandas as pd
 import logging
 from collections import defaultdict
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger()
+
+
+def pick_cname(cnames: List[str], prefix: str):
+    for cname in cnames:
+        if cname.startswith(prefix):
+            return cname
 
 
 def parse_stardist(fp: str) -> Tuple[Dict[str, pd.DataFrame], pd.DataFrame, pd.DataFrame]:
@@ -36,7 +42,7 @@ def parse_stardist(fp: str) -> Tuple[Dict[str, pd.DataFrame], pd.DataFrame, pd.D
     # To start, define where the single-field columns should be assigned
     struct = dict(
         partition=defaultdict(list), # This will be populated with keys like "Cell.Mean", "Membrane.Min", etc.
-        spatial=["Centroid X µm", "Centroid Y µm"],
+        spatial=[pick_cname(df.columns.values, prefix) for prefix in ["Centroid X", "Centroid Y"]],
         attributes=["Object ID", "Detection probability", "Nucleus/Cell area ratio"]
     )
     expected_cnames = [cname for cname_list in struct.values() for cname in cname_list ]
