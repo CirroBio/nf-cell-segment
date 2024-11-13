@@ -51,12 +51,36 @@ process split_measurements {
 
 workflow stardist {
     take:
-    script
-    seg_model
     input_tiff
-    stardist_jar
 
     main:
+
+    if("${params.container}" == "false"){
+        error "Parameter 'container' must be specified"
+    }
+
+    log.info"""
+    StarDist cell segmentation:
+
+    model:          ${params.model}
+    container:      ${params.container}
+    channels:       ${params.channels}
+    pixelSize:      ${params.pixelSize}
+    cellExpansion:  ${params.cellExpansion}
+    cellConstrainScale: ${params.cellConstrainScale}
+    """
+
+    seg_model = file(params.model, checkIfExists: true)
+
+    script = file(
+        "$projectDir/assets/StarDist_cell_segmentation.groovy",
+        checkIfExists: true
+    )
+
+    stardist_jar = file(
+        "$projectDir/assets/qupath-extension-stardist-0.5.0.jar",
+        checkIfExists: true
+    )
 
     qupath_stardist(script, seg_model, input_tiff, stardist_jar)
 

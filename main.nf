@@ -16,21 +16,16 @@ workflow {
     if("${params.input_tiff}" == "false"){
         error "Parameter 'input_tiff' must be specified"
     }
-    if("${params.container}" == "false"){
-        error "Parameter 'container' must be specified"
+    if("${params.method}" == "false"){
+        error "Parameter 'method' must be specified"
     }
 
     log.info"""
 Parameters:
 
     input_tiff:     ${params.input_tiff}
-    model:          ${params.model}
     output_folder:  ${params.output_folder}
-    container:      ${params.container}
-    pixelSize:      ${params.pixelSize}
-    channels:       ${params.channels}
-    cellExpansion:  ${params.cellExpansion}
-    cellConstrainScale: ${params.cellConstrainScale}
+    method:         ${params.method}
     build_dashboard:${params.build_dashboard}
     cluster_by:     ${params.cluster_by}
     cluster_method: ${params.cluster_method}
@@ -46,37 +41,27 @@ Parameters:
         checkIfExists: true
     )
 
-    seg_model = file(params.model, checkIfExists: true)
-
-    script = file(
-        "$projectDir/assets/StarDist_cell_segmentation.groovy",
-        checkIfExists: true
-    )
-
-    stardist_jar = file(
-        "$projectDir/assets/qupath-extension-stardist-0.5.0.jar",
-        checkIfExists: true
-    )
-
-    stardist(
-        script,
-        seg_model,
-        input_tiff,
-        stardist_jar
-    )
+    if(params.method == "stardist"){
+        stardist(input_tiff)
+        intensities = stardist.out.intensities
+        spatial = stardist.out.spatial
+        attributes = stardist.out.attributes
+        cells_geo_json = stardist.out.cells_geo_json
+        pixel_size = stardist.out.pixel_size
+    }
 
     if(params.build_dashboard){
 
-        cluster(stardist.out.intensities)
+        cluster(intensities)
 
         dashboard(
-            stardist.out.spatial,
-            stardist.out.attributes,
+            spatial,
+            attributes,
             cluster.out.clusters,
             cluster.out.scaled_data,
-            stardist.out.cells_geo_json,
+            cells_geo_json,
             input_tiff,
-            stardist.out.pixel_size
+            pixel_size
         )
 
     }
