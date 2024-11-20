@@ -5,6 +5,14 @@ set -euo pipefail
 echo "Input file:"
 ls -lahtr inputs/*
 
+# If the file extension is .qptiff, make a symlink to .tiff
+for file in inputs/*.qptiff; do
+    if [[ -f "$file" ]]; then
+        echo "Creating symlink for $file with .tiff extension"
+        ln -s "$file" "${file%.qptiff}.tiff"
+    fi
+done
+
 echo "Cellpose container: ${params.container_cellpose}"
 
 echo "Parameters:"
