@@ -21,7 +21,7 @@ Inputs / Outputs:
     output_folder:       ${params.output_folder}
 
 Cell Segmentation - Cellpose:
-    model:               ${params.model}
+    pretrained_model:    ${params.pretrained_model}
     channel_axis:        ${params.channel_axis}
     z_axis:              ${params.z_axis}
     segment_channel:     ${params.segment_channel}
