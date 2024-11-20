@@ -40,8 +40,8 @@ workflow stardist {
 
     main:
 
-    if("${params.container}" == "false"){
-        error "Parameter 'container' must be specified"
+    if("${params.container_stardist}" == "false"){
+        error "Parameter 'container_stardist' must be specified"
     }
 
     seg_model = file(params.model, checkIfExists: true)
