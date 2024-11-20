@@ -7,9 +7,9 @@ ls -lahtr inputs/*
 
 # If the file extension is .qptiff, make a symlink to .tiff
 for file in inputs/*.qptiff; do
-    if [[ -f "$file" ]]; then
-        echo "Creating symlink for $file with .tiff extension"
-        ln -s "$file" "${file%.qptiff}.tiff"
+    if [[ -f "\$file" ]]; then
+        echo "Creating symlink for \$file with .tiff extension"
+        ln -s "\$file" "\${file%.qptiff}.tiff"
     fi
 done
 
