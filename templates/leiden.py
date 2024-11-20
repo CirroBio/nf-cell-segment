@@ -160,7 +160,7 @@ def main():
 
     # Save the scaled data
     logger.info("Saving the scaled data")
-    df.to_csv("scaled_data.csv")
+    df.to_csv("scaled_intensities.csv")
 
     # Make an AnnData object
     logger.info("Creating an AnnData object")

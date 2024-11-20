@@ -2,7 +2,7 @@
 
 nextflow.enable.dsl = 2
 
-include { stardist } from './modules/stardist.nf'
+include { cellpose } from './modules/cellpose.nf'
 include { dashboard } from './modules/dashboard.nf'
 
 workflow {
@@ -20,13 +20,20 @@ Inputs / Outputs:
     input_tiff:          ${params.input_tiff}
     output_folder:       ${params.output_folder}
 
-Cell Segmentation - StarDist:
+Cell Segmentation - Cellpose:
     model:               ${params.model}
-    channels:            ${params.channels}
-    pixelSize:           ${params.pixelSize}
-    cellExpansion:       ${params.cellExpansion}
-    cellConstrainScale:  ${params.cellConstrainScale}
-    container:           ${params.container_stardist}
+    channel_axis:        ${params.channel_axis}
+    z_axis:              ${params.z_axis}
+    segment_channel:     ${params.segment_channel}
+    nuclear_channel:     ${params.nuclear_channel}
+    no_resample:         ${params.no_resample}
+    net_avg:             ${params.net_avg}
+    diameter:            ${params.diameter}
+    flow_threshold:      ${params.flow_threshold}
+    cellprob_threshold:  ${params.cellprob_threshold}
+    anisotropy:          ${params.anisotropy}
+    exclude_on_edges:    ${params.exclude_on_edges}
+    container:           ${params.container_cellpose}
 
 Dashboard:
     build_dashboard:     ${params.build_dashboard}
@@ -50,8 +57,8 @@ Dashboard:
     )
 
     // Run StarDist
-    stardist(input_tiff)
-    cells = stardist.out
+    cellpose(input_tiff)
+    cells = cellpose.out
 
     // If the user wants to build the dashboard
     if(params.build_dashboard){
