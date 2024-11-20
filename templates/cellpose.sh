@@ -25,14 +25,6 @@ else
     no_resample=""
 fi
 
-if [[ "${params.net_avg}" == "true" ]]; then
-    echo "Net avg: enabled"
-    net_avg="--net_avg"
-else
-    echo "Net avg: disabled"
-    net_avg=""
-fi
-
 if [[ "${params.exclude_on_edges}" == "true" ]]; then
     echo "Exclude on edges: enabled"
     exclude_on_edges="--exclude_on_edges"
@@ -78,10 +70,8 @@ cellpose \
     \$z_axis \
     \$exclude_on_edges \
     \$no_resample \
-    \$net_avg \
     --save_flows \
     --save_outlines \
-    --save_ncolor \
     --save_tif \
     --dir inputs/ \
     --savedir . \

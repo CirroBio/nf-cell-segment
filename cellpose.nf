@@ -27,7 +27,6 @@ Cell Segmentation - Cellpose:
     segment_channel:     ${params.segment_channel}
     nuclear_channel:     ${params.nuclear_channel}
     no_resample:         ${params.no_resample}
-    net_avg:             ${params.net_avg}
     diameter:            ${params.diameter}
     flow_threshold:      ${params.flow_threshold}
     cellprob_threshold:  ${params.cellprob_threshold}
@@ -56,7 +55,7 @@ Dashboard:
         checkIfExists: true
     )
 
-    // Run StarDist
+    // Run cellpose
     cellpose(input_tiff)
     cells = cellpose.out
 

@@ -1,11 +1,26 @@
 include { split_measurements } from './shared.nf'
 
+process unpack_model {
+    container "${params.container_python}"
+    input:
+    path model_zip
+
+    output:
+    path "*"
+
+    script:
+    """#!/bin/bash
+unzip ${model_zip}
+    """
+}
+
 process find_cells {
     container "${params.container_cellpose}"
     publishDir "${params.output_folder}/cellpose", mode: 'copy', overwrite: true
 
     input:
     path "inputs/"
+    path "/root/.cellpose/${params.pretrained_model}/"
 
     output:
     path "*.npy", emit: npy
@@ -21,6 +36,7 @@ process measure_cells {
     publishDir "${params.output_folder}/cellpose", mode: 'copy', overwrite: true
 
     input:
+    path "input.tiff"
     path npy
 
     output:
@@ -49,11 +65,21 @@ workflow cellpose {
     input_tiff
 
     main:
+
+    // Get the model
+    model_zip = file(
+        "https://www.cellpose.org/models/${params.pretrained_model}",
+        checkIfExists: true
+    )
+
+    // Unpack the model
+    unpack_model(model_zip)
+
     // Run cellpose to find cells
-    find_cells(input_tiff)
+    find_cells(input_tiff, unpack_model.out)
 
     // Parse the cell shapes from .npy format
-    measure_cells(find_cells.out.npy)
+    measure_cells(input_tiff, find_cells.out.npy)
 
     // Parse out the spatial and attribute information
     split_measurements(measure_cells.out.measurements_csv)

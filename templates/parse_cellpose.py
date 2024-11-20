@@ -5,30 +5,43 @@ import json
 from typing import List
 import numpy as np
 import pandas as pd
+from skimage import io
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger()
 
 
 def main():
 
-    # fp = "${npy}"
-    fp = "0bda515e370294ed94efd36bd53782288acacb040c171df2ed97fd691fc9d8fe_seg.npy"
+    fp = "${npy}"
 
-    print(f"Loading {fp}")
+    logger.info(f"Loading {fp}")
     data = np.load(fp, allow_pickle=True).item()
 
     for kw, val in data.items():
-        print(f"{kw}: {val}")
+        logger.info(f"{kw}: {val}")
 
     # Convert the cells from the numpy array to GeoJSON format
+    logger.info("Converting cells to GeoJSON")
     geojson = make_geojson(data["outlines"])
 
     # Save the GeoJSON to a gzip compressed JSON file
+    logger.info("Saving GeoJSON")
     with gzip.open("cells.geojson.gz", "wt") as f:
         json.dump(geojson, f)
 
+    # Read in the image data from "input.tiff"
+    logger.info("Reading image data")
+    img = io.imread("input.tiff")
+
     # Measure the intensity of each channel for each cell
-    measurements = measure_intensity(data["img"], data["masks"])
+    logger.info("Measuring intensity")
+    measurements = measure_intensity(img, data["masks"])
 
     # Add the centroid coordinates to the measurements
+    logger.info("Adding centroids")
     measurements = measurements.merge(
         find_centroids(data["masks"]),
         on="Object ID",
@@ -37,6 +50,7 @@ def main():
 
     # Add in some dummy columns to conform to the expectations
     # from other methods
+    logger.info("Adding dummy columns")
     measurements = measurements.assign(
         **{
             "Detection probability": 0,
@@ -45,6 +59,7 @@ def main():
     )
 
     # Write out to CSV
+    logger.info("Writing measurements")
     measurements.to_csv("measurements.csv.gz", index=False)
 
 
@@ -54,7 +69,9 @@ def find_centroids(masks: np.ndarray) -> pd.DataFrame:
     # of the cell
     centroids = []
 
-    for cell_id in np.unique(masks):
+    cell_ids = np.unique(masks)
+    logger.info(f"Found {len(cell_ids)-1:,} cells")
+    for cell_id in cell_ids:
         if cell_id == 0:
             continue
 
@@ -89,9 +106,11 @@ def measure_intensity(img: np.ndarray, masks: np.ndarray) -> pd.DataFrame:
         cell_mask = masks == cell_id
 
         # Measure the intensity of each channel
-        for channel in range(img.shape[0]):
-            print(img.shape)
-            intensity = img[channel, :, :].squeeze()[cell_mask]
+        channel_axis = int("${params.channel_axis}")
+        logger.info(f"Using channel axis: {channel_axis}")
+        for channel in range(img.shape[channel_axis]):
+            logger.info(img.shape)
+            intensity = np.take(img, channel, axis=channel_axis).squeeze()[cell_mask]
 
             # Compute the summary statistics for the channel
             mean_intensity = np.mean(intensity)
