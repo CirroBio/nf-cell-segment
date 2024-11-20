@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 # Add the stardist.jar to qupath
 cp "${stardist_jar}" /usr/local/QuPath/lib/app/
@@ -31,7 +31,6 @@ QuPath script \
     --args \$PWD/input.tiff \
     --args \$PWD/cells.geo.json \
     --args ${params.threshold} \
-    --args ${params.pixelSize} \
     --args ${params.channels} \
     --args ${params.cellExpansion} \
     --args ${params.cellConstrainScale} \

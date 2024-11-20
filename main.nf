@@ -23,7 +23,6 @@ Inputs / Outputs:
 Cell Segmentation - StarDist:
     model:               ${params.model}
     channels:            ${params.channels}
-    pixelSize:           ${params.pixelSize}
     cellExpansion:       ${params.cellExpansion}
     cellConstrainScale:  ${params.cellConstrainScale}
     container:           ${params.container_stardist}
