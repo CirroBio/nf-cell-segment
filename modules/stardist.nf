@@ -1,5 +1,7 @@
-process qupath_stardist {
-    container "${params.container}"
+include { split_measurements } from './shared.nf'
+
+process find_cells {
+    container "${params.container_stardist}"
     publishDir "${params.output_folder}/stardist", mode: 'copy', overwrite: true
 
     input:
@@ -32,41 +34,37 @@ process get_pixel_size {
     template "get_pixel_size.py"
 }
 
-
-process split_measurements {
-    container "${params.container_python}"
-    publishDir "${params.output_folder}/cell_measurements", mode: 'copy', overwrite: true
-
-    input:
-        path measurements_csv
-
-    output:
-        path "spatial.csv", emit: spatial
-        path "attributes.csv", emit: attributes
-        path "*.*.csv", emit: intensities
-
-    script:
-    template "split_measurements.py"
-}
-
 workflow stardist {
     take:
-    script
-    seg_model
     input_tiff
-    stardist_jar
 
     main:
 
-    qupath_stardist(script, seg_model, input_tiff, stardist_jar)
+    if("${params.container_stardist}" == "false"){
+        error "Parameter 'container_stardist' must be specified"
+    }
 
-    split_measurements(qupath_stardist.out.measurements_csv)
+    seg_model = file(params.model, checkIfExists: true)
 
-    get_pixel_size(qupath_stardist.out.project)
+    script = file(
+        "$projectDir/assets/StarDist_cell_segmentation.groovy",
+        checkIfExists: true
+    )
+
+    stardist_jar = file(
+        "$projectDir/assets/qupath-extension-stardist-0.5.0.jar",
+        checkIfExists: true
+    )
+
+    find_cells(script, seg_model, input_tiff, stardist_jar)
+
+    split_measurements(find_cells.out.measurements_csv)
+
+    get_pixel_size(find_cells.out.project)
 
     emit:
-    project = qupath_stardist.out.project
-    cells_geo_json = qupath_stardist.out.cells_geo_json
+    project = find_cells.out.project
+    cells_geo_json = find_cells.out.cells_geo_json
     spatial = split_measurements.out.spatial
     attributes = split_measurements.out.attributes
     intensities = split_measurements.out.intensities

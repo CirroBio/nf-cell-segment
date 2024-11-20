@@ -1,3 +1,20 @@
+process leiden {
+    container "${params.container_python}"
+    publishDir "${params.output_folder}/cell_clustering", mode: 'copy', overwrite: true
+
+    input:
+    path "*"
+
+    output:
+    path "leiden_clusters.csv", emit: clusters
+    path "scaled_intensities.csv", emit: scaled_intensities
+    path "figures/*.pdf", emit: plots
+
+    script:
+    template "leiden.py"
+
+}
+
 process anndata {
     container "${params.container_python}"
 
@@ -54,20 +71,25 @@ workflow dashboard {
     take:
     spatial
     attributes
-    clusters
     intensities
     cells_geo_json
     image
     pixel_size
 
     main:
+
+    // Cluster the cells
+    leiden(intensities)
+
+    // Create anndata object
     anndata(
         spatial,
         attributes,
-        clusters,
-        intensities
+        leiden.out.clusters,
+        leiden.out.scaled_intensities
     )
 
+    // Create spatial data object
     spatialdata(
         anndata.out,
         cells_geo_json,
@@ -75,6 +97,7 @@ workflow dashboard {
         pixel_size
     )
 
+    // Configure the displays using Vitessce 
     configure_vitessce(
         spatialdata.out.kwargs
     )

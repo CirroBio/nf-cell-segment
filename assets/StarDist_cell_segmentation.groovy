@@ -6,11 +6,23 @@ import qupath.lib.images.servers.ImageServerProvider
 import qupath.opencv.ops.ImageOps
 
 def threshold = args[5] as float
-def pixelSize = args[6] as float
-def channels = args[7] as int
-def cellExpansion = args[8] as int
-def cellConstrainScale = args[9] as float
+def channels = args[6] as int
+def cellExpansion = args[7] as int
+def cellConstrainScale = args[8] as float
 
+def projectDir = new File(args[2])
+def project = Projects.createProject(projectDir , BufferedImage.class)
+def inputFile = new File(args[3])
+def server = new qupath.lib.images.servers.bioformats.BioFormatsServerBuilder().buildServer(inputFile.toURI())
+def imageData = new ImageData(server)
+def entry = project.addImage(server.getBuilder())
+entry.setImageName(server.getMetadata().getName())
+entry.setThumbnail(qupath.lib.gui.commands.ProjectCommands.getThumbnailRGB(server))
+
+entry.saveImageData(imageData)
+project.syncChanges()
+
+def pixelSize = server.getPixelCalibration().getAveragedPixelSize()
 def stardist = StarDist2D
         .builder(args[0])
         .threshold(threshold)        // Probability (detection) threshold
@@ -27,17 +39,6 @@ def stardist = StarDist2D
         .includeProbability(true)    // Add probability as a measurement (enables later filtering)
         .build()
 
-def projectDir = new File(args[2])
-def project = Projects.createProject(projectDir , BufferedImage.class)
-def inputFile = new File(args[3])
-def server = new qupath.lib.images.servers.bioformats.BioFormatsServerBuilder().buildServer(inputFile.toURI())
-def imageData = new ImageData(server)
-def entry = project.addImage(server.getBuilder())
-entry.setImageName(server.getMetadata().getName())
-entry.setThumbnail(qupath.lib.gui.commands.ProjectCommands.getThumbnailRGB(server))
-
-entry.saveImageData(imageData)
-project.syncChanges()
 def pathObjects = createFullImageAnnotation(imageData, true)
 
 stardist.detectObjects(imageData, pathObjects, true)

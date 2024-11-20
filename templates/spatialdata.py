@@ -52,6 +52,19 @@ def read_table(fp: str, instance_key="${params.instance_key}") -> TableModel:
     )
 
 
+def has_geometry(
+    geo_json: List[dict],
+    val: str
+) -> bool:
+    """
+    Check if the geometry is present in the GeoJSON.
+    """
+    return all(
+        val in cell
+        for cell in geo_json
+    )
+
+
 def parse_geo_json(
     geo_json: List[dict],
     kw: str,
@@ -444,18 +457,18 @@ def main(
     geo_json = json.load(gzip.open(cells_geo_json, "r"))
 
     # Parse the outlines of the cells and nuclei, and the centroids
-    masks = dict(
-        cell=parse_geo_json(
+    masks = {
+        kw: parse_geo_json(
             geo_json,
-            "geometry",
-            pixel_size=pixel_size
-        ),
-        nucleus=parse_geo_json(
-            geo_json,
-            "nucleusGeometry",
+            val,
             pixel_size=pixel_size
         )
-    )
+        for kw, val in [
+            ("cell", "geometry"),
+            ("nucleus", "nucleusGeometry")
+        ]
+        if has_geometry(geo_json, val)
+    }
 
     shapes = dict(
         centroids=make_spatial_points(
