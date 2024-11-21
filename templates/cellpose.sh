@@ -67,7 +67,7 @@ else
     anisotropy=""
 fi
 
-echo "Running cellpose"
+echo "\$(date) - Running cellpose"
 cellpose \
     --pretrained_model "${params.pretrained_model}" \
     --channel_axis "${params.channel_axis}" \
@@ -80,13 +80,13 @@ cellpose \
     \$z_axis \
     \$exclude_on_edges \
     \$no_resample \
-    --save_flows \
     --save_outlines \
+    --save_png \
     --save_tif \
     --dir inputs/ \
     --savedir . \
     --verbose
-echo "Done running cellpose"
+echo "\$(date) Done running cellpose"
 
 ls -lahtr *
 
