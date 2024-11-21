@@ -65,6 +65,20 @@ def has_geometry(
     )
 
 
+def make_polygon(cell: dict, kw: str) -> Polygon:
+    try:
+        polygon = Polygon(
+            array(
+                cell[kw]["coordinates"][0]
+            )
+        )
+    except ValueError as e:
+        logger.info(f"Error parsing cell {cell['id']}")
+        logger.info(cell[kw]["coordinates"][0])
+        raise e
+    return polygon
+
+
 def parse_geo_json(
     geo_json: List[dict],
     kw: str,
@@ -77,11 +91,7 @@ def parse_geo_json(
         GeoDataFrame([
             dict(
                 id=cell["id"],
-                geometry=Polygon(
-                    array(
-                        cell[kw]["coordinates"][0]
-                    )
-                )
+                geometry=make_polygon(cell, kw)
             )
             for cell in geo_json
         ])
