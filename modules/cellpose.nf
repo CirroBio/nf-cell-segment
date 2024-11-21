@@ -25,7 +25,7 @@ process find_cells {
     output:
     path "*.npy", emit: npy
     path "*.tif", emit: tif
-    path "*.png", emit: png
+    path "*", emit: other
 
     script:
     template "cellpose.sh"
