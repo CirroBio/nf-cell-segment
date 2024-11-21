@@ -65,16 +65,48 @@ def has_geometry(
     )
 
 
+def _is_list_of_points(coordinates: list) -> bool:
+    return (
+        isinstance(coordinates, list)
+        and len(coordinates) > 0
+        and all(isinstance(point, list) for point in coordinates)
+        and all([len(point) == 2 for point in coordinates])
+        and all([isinstance(val, (int, float)) for point in coordinates for val in point])
+    )
+
+
+def unpack_extra_dimensions(coordinates: list) -> list:
+    """Unpack the coordinates until there is a single list of 2D points."""
+
+    while len(coordinates) > 0:
+        if _is_list_of_points(coordinates):
+            return coordinates
+        else:
+            coordinates = coordinates[0]
+
+
 def make_polygon(cell: dict, kw: str) -> Polygon:
+    # Get the array of coordinates
+    coordinates: list = cell[kw]["coordinates"]
+
+    # Unpack extra dimensions
+    coordinates = unpack_extra_dimensions(coordinates)
+
+    # If the last set of points is the same as the first, remove it
+    if (
+        len(coordinates) > 1
+        and coordinates[0][0] == coordinates[-1][0]
+        and coordinates[0][1] == coordinates[-1][1]
+    ):
+        coordinates.pop(-1)
+
+    # Make the polygon
     try:
-        polygon = Polygon(
-            array(
-                cell[kw]["coordinates"][0]
-            )
-        )
+        polygon = Polygon(array(coordinates))
     except ValueError as e:
         logger.info(f"Error parsing cell {cell['id']}")
-        logger.info(cell[kw]["coordinates"][0])
+        logger.info(cell[kw]["coordinates"])
+        logger.info(coordinates)
         raise e
     return polygon
 
