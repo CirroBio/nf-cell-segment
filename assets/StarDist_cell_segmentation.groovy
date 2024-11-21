@@ -23,6 +23,10 @@ entry.saveImageData(imageData)
 project.syncChanges()
 
 def pixelSize = server.getPixelCalibration().getAveragedPixelSize()
+
+// Log the pixel size
+println "Pixel size from image metadata: ${pixelSize}"
+
 def stardist = StarDist2D
         .builder(args[0])
         .threshold(threshold)        // Probability (detection) threshold
