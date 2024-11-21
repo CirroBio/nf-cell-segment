@@ -34,6 +34,7 @@ QuPath script \
     --args ${params.channels} \
     --args ${params.cellExpansion} \
     --args ${params.cellConstrainScale} \
+    --args ${task.cpus} \
     | tee -a qupath.log.txt
 
 gzip measurements.csv

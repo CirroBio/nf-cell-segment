@@ -4,11 +4,18 @@ import qupath.ext.stardist.StarDist2D
 import java.awt.image.BufferedImage
 import qupath.lib.images.servers.ImageServerProvider
 import qupath.opencv.ops.ImageOps
+import qupath.lib.common.ThreadTools
+
+println 'Starting StarDist cell segmentation'
 
 def threshold = args[5] as float
 def channels = args[6] as int
 def cellExpansion = args[7] as int
 def cellConstrainScale = args[8] as float
+
+// Set the number of threads
+def numThreads = args[9] as int
+ThreadTools.setParallelism(numThreads)
 
 def projectDir = new File(args[2])
 def project = Projects.createProject(projectDir , BufferedImage.class)
