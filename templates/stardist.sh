@@ -7,9 +7,9 @@ sed -i \
     's/\\[Application\\]/\\[Application\\]\\napp.classpath=\$APPDIR\\/${stardist_jar}/' \
     /usr/local/QuPath/lib/app/QuPath.cfg
 
-sed -i \
-    's/MaxRAMPercentage=50/MaxRAMPercentage=99/' \
-    /usr/local/QuPath/lib/app/QuPath.cfg
+# sed -i \
+#     's/MaxRAMPercentage=50/MaxRAMPercentage=99/' \
+#     /usr/local/QuPath/lib/app/QuPath.cfg
 
 cat /usr/local/QuPath/lib/app/QuPath.cfg
 
