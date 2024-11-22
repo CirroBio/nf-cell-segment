@@ -1,4 +1,4 @@
-FROM python:3.11
+FROM pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime
 
 LABEL base_image="python:3.11"
 LABEL version="1"
@@ -53,22 +53,18 @@ RUN pip install -U pip \
     numba>=0.43.1 \
     wheel \
     scipy
-
-RUN pip install -U pip \
-    torch>=1.6 \
-    opencv-python-headless \
-    pyqtgraph>=0.11.0rc0
-
+    
 RUN pip install -U pip \
     natsort \
     scikit-image \
     matplotlib
-
+    
+RUN pip install -U pip opencv-python-headless
+    
 RUN pip install -U pip \
     scikit-learn \
     tqdm
 
-RUN pip install -U pip \
-    tifffile \
-    fastremap \
-    cellpose==$CELLPOSE_VERSION
+RUN pip install -U pip tifffile
+RUN pip install -U pip fastremap
+RUN pip install -U pip cellpose==$CELLPOSE_VERSION
