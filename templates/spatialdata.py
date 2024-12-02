@@ -327,7 +327,7 @@ def downscale_image(
 
 
 def read_tif(
-    tmp_file,
+    tmp_file: str,
     table: ad.AnnData,
     shapes:  Mapping[str, GeoDataFrame],
     masks: Mapping[str, GeoDataFrame],
@@ -340,6 +340,12 @@ def read_tif(
     """
     Read in a TIF file
     """
+
+    # If there are backslashes in the path, remove them and inform the user
+    if "\\" in tmp_file:
+        logger.info(f"Removing backslashes from file path ({tmp_file})")
+        tmp_file = tmp_file.replace("\\", "")
+        logger.info(f"New file path: {tmp_file}")
 
     logger.info(f"Reading TIF image from {tmp_file}")
 
