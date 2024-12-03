@@ -342,9 +342,9 @@ def read_tif(
     """
 
     # If there are backslashes in the path, remove them and inform the user
-    if "\\" in tmp_file:
+    if "\\\\" in tmp_file:
         logger.info(f"Removing backslashes from file path ({tmp_file})")
-        tmp_file = tmp_file.replace("\\", "")
+        tmp_file = tmp_file.replace("\\\\", "")
         logger.info(f"New file path: {tmp_file}")
 
     logger.info(f"Reading TIF image from {tmp_file}")
