@@ -37,10 +37,7 @@ println "Pixel size from image metadata: ${pixelSize}"
 def stardist = StarDist2D
         .builder(args[0])
         .threshold(threshold)        // Probability (detection) threshold
-        .preprocess(
-                ImageOps.Core.subtract(100),
-                ImageOps.Core.divide(100)
-        )
+        .normalizePercentiles(1, 99) // Percentile normalization
         .pixelSize(pixelSize)        // Resolution for detection
         .channels(channels)                 // Select detection channel
         .cellExpansion(cellExpansion)          // Approximate cells based upon nucleus expansion
