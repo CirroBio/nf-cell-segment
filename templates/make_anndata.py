@@ -68,12 +68,18 @@ def main(
     # Make sure that all of the values in the instance_key column are unique
     if not obs[instance_key].is_unique:
         raise ValueError(f"The values in the column '{instance_key}' must be unique")
+    
+    # Set the index to the instance_key, but also preserve it in the table
+    obs.set_index(instance_key, inplace=True, drop=False)
+
+    # Use the same index for the intensities
+    intensities.index = obs.index
 
     # Create the AnnData object
     logger.info("Creating AnnData object")
     adata = AnnData(
-        X=intensities.reset_index(drop=True),
-        obs=obs.reset_index(drop=True),
+        X=intensities,
+        obs=obs,
         obsm={"spatial": spatial.values}
     )
 
