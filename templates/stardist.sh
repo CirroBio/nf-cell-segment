@@ -7,10 +7,6 @@ sed -i \
     's/\\[Application\\]/\\[Application\\]\\napp.classpath=\$APPDIR\\/${stardist_jar}/' \
     /usr/local/QuPath/lib/app/QuPath.cfg
 
-# sed -i \
-#     's/MaxRAMPercentage=50/MaxRAMPercentage=99/' \
-#     /usr/local/QuPath/lib/app/QuPath.cfg
-
 cat /usr/local/QuPath/lib/app/QuPath.cfg
 
 echo Working Directory: | tee qupath.log.txt
@@ -34,6 +30,8 @@ QuPath script \
     --args ${params.channels} \
     --args ${params.cellExpansion} \
     --args ${params.cellConstrainScale} \
+    --args ${params.minPercentileNormalization} \
+    --args ${params.maxPercentileNormalization} \
     --args ${task.cpus} \
     | tee -a qupath.log.txt
 

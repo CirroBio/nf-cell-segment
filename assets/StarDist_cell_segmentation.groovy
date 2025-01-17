@@ -12,9 +12,11 @@ def threshold = args[5] as float
 def channels = args[6] as int
 def cellExpansion = args[7] as int
 def cellConstrainScale = args[8] as float
+def minPercentile = args[9] as int
+def maxPercentile = args[10] as int
 
 // Set the number of threads
-def numThreads = args[9] as int
+def numThreads = args[11] as int
 ThreadTools.setParallelism(numThreads)
 
 def projectDir = new File(args[2])
@@ -37,7 +39,7 @@ println "Pixel size from image metadata: ${pixelSize}"
 def stardist = StarDist2D
         .builder(args[0])
         .threshold(threshold)        // Probability (detection) threshold
-        .normalizePercentiles(1, 99) // Percentile normalization
+        .normalizePercentiles(minPercentile, maxPercentile) // Percentile normalization
         .pixelSize(pixelSize)        // Resolution for detection
         .channels(channels)                 // Select detection channel
         .cellExpansion(cellExpansion)          // Approximate cells based upon nucleus expansion
