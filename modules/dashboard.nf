@@ -8,7 +8,7 @@ process leiden {
     output:
     path "leiden_clusters.csv", emit: clusters
     path "scaled_intensities.csv", emit: scaled_intensities
-    path "figures/*.pdf", emit: plots
+    path "figures/*.p*", emit: plots
 
     script:
     template "leiden.py"

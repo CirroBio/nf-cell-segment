@@ -115,22 +115,23 @@ def make_summary_plots(adata):
     """
 
     # Make a UMAP plot
-    logger.info("Making a UMAP plot")
-    sc.pl.umap(
-        adata,
-        color='leiden',
-        add_outline=True,
-        legend_loc="on data",
-        legend_fontsize=12,
-        legend_fontoutline=2,
-        frameon=False,
-        palette="Set1",
-        save='.pdf'
-    )
+    for suffix in [".pdf", ".png"]:
+        logger.info(f"Making a UMAP plot ({suffix})")
+        sc.pl.umap(
+            adata,
+            color='leiden',
+            add_outline=True,
+            legend_loc="on data",
+            legend_fontsize=12,
+            legend_fontoutline=2,
+            frameon=False,
+            palette="Set1",
+            save=suffix
+        )
 
-    # Make a dot plot
-    logger.info("Making a dot plot")
-    sc.pl.dotplot(adata, adata.var_names, groupby='leiden', save='.pdf')
+        # Make a dot plot
+        logger.info(f"Making a dot plot ({suffix})")
+        sc.pl.dotplot(adata, adata.var_names, groupby='leiden', save=suffix)
 
 
 def main():
