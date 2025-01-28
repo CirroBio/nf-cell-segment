@@ -36,10 +36,16 @@ def pixelSize = server.getPixelCalibration().getAveragedPixelSize()
 // Log the pixel size
 println "Pixel size from image metadata: ${pixelSize}"
 
+// Normalization approach follows https://qupath.readthedocs.io/en/stable/docs/deep/stardist.html#improving-input-normalization
 def stardist = StarDist2D
         .builder(args[0])
         .threshold(threshold)        // Probability (detection) threshold
-        .normalizePercentiles(minPercentile, maxPercentile) // Percentile normalization
+        .preprocess(                 // Apply normalization across the entire image
+                StarDist2D.imageNormalizationBuilder()
+                        .maxDimension(4096)
+                        .percentiles(minPercentile, maxPercentile)
+                        .build()
+        )
         .pixelSize(pixelSize)        // Resolution for detection
         .channels(channels)                 // Select detection channel
         .cellExpansion(cellExpansion)          // Approximate cells based upon nucleus expansion
