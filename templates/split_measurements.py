@@ -71,7 +71,7 @@ def parse_stardist(fp: str) -> Tuple[Dict[str, pd.DataFrame], pd.DataFrame, pd.D
         # Measured intensities
         # e.g. DAPI: Nucleus: Mean
         elif len(fields) == 3:
-            _, measurement, partition = fields
+            partition, _, measurement = fields
             # Format the label as "Partition.Measurement"
             label = f"{partition}.{measurement}"
             # Pass through the name of the partition
