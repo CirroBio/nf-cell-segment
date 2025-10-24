@@ -52,7 +52,7 @@ workflow stardist {
     )
 
     stardist_jar = file(
-        "$projectDir/assets/qupath-extension-stardist-0.5.0.jar",
+        "$projectDir/assets/qupath-extension-stardist-0.6.0.jar",
         checkIfExists: true
     )
 
