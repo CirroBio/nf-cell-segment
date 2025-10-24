@@ -71,7 +71,7 @@ def parse_stardist(fp: str) -> Tuple[Dict[str, pd.DataFrame], pd.DataFrame, pd.D
         # Measured intensities
         # e.g. DAPI: Nucleus: Mean
         elif len(fields) == 3:
-            _, partition, measurement = fields
+            partition, _, measurement = fields
             # Format the label as "Partition.Measurement"
             label = f"{partition}.{measurement}"
             # Pass through the name of the partition
@@ -83,7 +83,7 @@ def parse_stardist(fp: str) -> Tuple[Dict[str, pd.DataFrame], pd.DataFrame, pd.D
         partition: (
             df
             .reindex(columns=cnames)
-            .rename(columns=lambda cname: cname.split(": ")[0])
+            .rename(columns=lambda cname: cname.split(": ")[1])
         )
         for partition, cnames in struct["partition"].items()
     }
