@@ -1,4 +1,5 @@
 #!/usr/local/bin/python3
+from pathlib import Path
 
 import pandas as pd
 import logging
@@ -95,8 +96,8 @@ def parse_stardist(fp: str) -> Tuple[Dict[str, pd.DataFrame], pd.DataFrame, pd.D
 
 def main():
 
-    fp = "${measurements_csv}"
-    logger.info(f"Reading data from: {fp}")    
+    fp = Path("~/Downloads/measurements.csv").expanduser()
+    logger.info(f"Reading data from: {fp}")
     partition, spatial, attributes = parse_stardist(fp)
 
     # Save to files
