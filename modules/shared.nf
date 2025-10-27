@@ -11,5 +11,5 @@ process split_measurements {
         path "*.*.csv", emit: intensities
 
     script:
-    template "split_measurements.py"
+    template "split_measurements.sh"
 }

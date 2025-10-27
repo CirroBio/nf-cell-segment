@@ -1,4 +1,6 @@
 #!/usr/local/bin/python3
+import sys
+from pathlib import Path
 
 import pandas as pd
 import logging
@@ -16,7 +18,7 @@ def pick_cname(cnames: List[str], prefix: str):
             return cname
 
 
-def parse_stardist(fp: str) -> Tuple[Dict[str, pd.DataFrame], pd.DataFrame, pd.DataFrame]:
+def parse_stardist(fp: Path) -> Tuple[Dict[str, pd.DataFrame], pd.DataFrame, pd.DataFrame]:
     """
     Parse a table of data output by StarDist into a dict of component tables.
 
@@ -93,10 +95,8 @@ def parse_stardist(fp: str) -> Tuple[Dict[str, pd.DataFrame], pd.DataFrame, pd.D
     return partition, spatial, attributes
 
 
-def main():
-
-    fp = "${measurements_csv}"
-    logger.info(f"Reading data from: {fp}")    
+def main(fp: Path):
+    logger.info(f"Reading data from: {fp}")
     partition, spatial, attributes = parse_stardist(fp)
 
     # Save to files
@@ -110,4 +110,5 @@ def main():
     attributes.to_csv("attributes.csv")
 
 
-main()
+if __name__ == '__main__':
+    main(Path(sys.argv[1]))
