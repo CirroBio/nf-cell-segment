@@ -1,4 +1,4 @@
 #!/bin/bash
 set -euo pipefail
 
-python split_measurements.py ${measurements_csv}
+python3 split_measurements.py ${measurements_csv}
