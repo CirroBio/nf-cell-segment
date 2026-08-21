@@ -8,12 +8,16 @@ import qupath.lib.common.ThreadTools
 
 println 'Starting StarDist cell segmentation'
 
-def threshold = args[5] as float
+// These are parsed as double to match the QuPath builder signatures they feed
+// (threshold, cellExpansion, cellConstrainScale and percentiles all take
+// double). Parsing them as int rejected the pipeline's own defaults, e.g.
+// cellExpansion = 5.0. channels stays int because channels() takes int varargs.
+def threshold = args[5] as double
 def channels = args[6] as int
-def cellExpansion = args[7] as int
-def cellConstrainScale = args[8] as float
-def minPercentile = args[9] as int
-def maxPercentile = args[10] as int
+def cellExpansion = args[7] as double
+def cellConstrainScale = args[8] as double
+def minPercentile = args[9] as double
+def maxPercentile = args[10] as double
 
 // Set the number of threads
 def numThreads = args[11] as int
